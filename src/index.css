@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --color-paper: #f6f3ea;
+  --color-paper-2: #ede9dc;
+  --color-ink: #2e2936;
+  --color-ink-2: #1d1a23;
+  --color-mute: #6f6a78;
+  --color-line: rgb(46 41 54 / 0.14);
+  --color-sun: #ffd900;
+  --color-coral: #ec5451;
+  --color-mint: #87dac7;
+  --color-amber: #eaaa2a;
+}
+
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--color-sun); color: var(--color-ink); }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+.display { letter-spacing: -0.045em; line-height: 0.95; font-weight: 500; }
+.serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; }
+
+/* animated marker highlight */
+.mark {
+  background-image: linear-gradient(var(--color-sun), var(--color-sun));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: var(--mark, 0%) 0.34em;
+}
+
+/* line-mask reveal */
+.line { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.line > span { display: block; will-change: transform; }
+
+
+.rule { border-color: var(--color-line); }
+
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee { animation: marquee 38s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .marquee { animation: none; } }
+
+.code-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+.code-scroll::-webkit-scrollbar-thumb { background: rgb(255 255 255 / .15); border-radius: 6px; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 18s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  height: 44px; padding: 0 18px; border-radius: 8px;
+  font-size: 14.5px; font-weight: 500;
+  transition: background-color .2s, color .2s, transform .2s;
+}
+.btn:active { transform: scale(.98); }
+.btn-sun { background: var(--color-sun); color: var(--color-ink); }
+.btn-sun:hover { background: #ffe433; }
+.btn-ink { background: var(--color-ink); color: var(--color-paper); }
+.btn-ink:hover { background: var(--color-ink-2); }
+.btn-ghost { box-shadow: 0 0 0 1px var(--color-line) inset; }
+.btn-ghost:hover { background: rgb(46 41 54 / 0.05); }
+
+.frame {
+  border-radius: 10px;
+  background: var(--color-ink-2);
+  box-shadow: 0 0 0 1px rgb(46 41 54 / .25), 0 30px 60px -28px rgb(46 41 54 / .35), 0 8px 20px -10px rgb(46 41 54 / .2);
+}
