@@ -4,11 +4,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 // Drawper's architecture canvas as an isometric line drawing: flat plates,
 // hairline edges, one yellow plate. Same projection family as the figures below.
-const PAPER = 0xfbf9f3
-const PAPER_SIDE = 0xe7e2d3
-const INK = 0x2e2936
+const PAPER = 0x24222d
+const PAPER_SIDE = 0x15141b
+const INK = 0xd9d5e0
 const SUN = 0xffd900
-const SUN_SIDE = 0xdcbd00
+const SUN_SIDE = 0xb89b00
 
 const W = 2.4, T = 0.34, D = 1.1
 
@@ -16,7 +16,7 @@ const NODES = [
   { name: 'web-app', sub: 'CLIENT · Next.js', p: [-4.8, 0] },
   { name: 'gateway', sub: 'GATEWAY · Kong', p: [-1.6, 0] },
   { name: 'orders-api', sub: 'API · Node', p: [1.6, 0], accent: true },
-  { name: 'orders-db', sub: 'DB · postgres', p: [4.8, -2.4], dark: true },
+  { name: 'orders-db', sub: 'DB · postgres', p: [4.8, -2.4], pale: true },
   { name: 'cache', sub: 'CACHE · redis', p: [4.8, 0] },
   { name: 'mailer', sub: 'WORKER', p: [1.6, 2.4] },
   { name: 'jobs', sub: 'QUEUE · rabbitmq', p: [4.8, 2.4] },
@@ -28,7 +28,7 @@ function labelTexture(name, sub, dark) {
   c.width = 1024
   c.height = 448
   const g = c.getContext('2d')
-  g.fillStyle = dark ? '#f6f3ea' : '#2e2936'
+  g.fillStyle = dark ? '#1a1820' : '#ecebf0'
   g.font = '500 96px "Geist Mono", monospace'
   g.fillText(name, 56, 210)
   g.globalAlpha = 0.6
@@ -68,8 +68,8 @@ export default function Scene() {
     disposables.push(boxGeo, edgeGeo, labelGeo, edgeMat)
 
     const plates = NODES.map((n) => {
-      const top = n.dark ? INK : n.accent ? SUN : PAPER
-      const side = n.dark ? 0x1d1a23 : n.accent ? SUN_SIDE : PAPER_SIDE
+      const top = n.pale ? 0xe9e6ee : n.accent ? SUN : PAPER
+      const side = n.pale ? 0x8f8b9a : n.accent ? SUN_SIDE : PAPER_SIDE
       const sideM = new THREE.MeshBasicMaterial({ color: side })
       const topM = new THREE.MeshBasicMaterial({ color: top })
       // BoxGeometry face order: +x, -x, +y, -y, +z, -z
@@ -85,7 +85,7 @@ export default function Scene() {
     document.fonts.load('500 40px "Geist Mono"').finally(() => {
       if (dead) return
       NODES.forEach((n, i) => {
-        const tex = labelTexture(n.name, n.sub, n.dark)
+        const tex = labelTexture(n.name, n.sub, n.pale || n.accent)
         const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, toneMapped: false })
         const plane = new THREE.Mesh(labelGeo, mat)
         plane.rotation.x = -Math.PI / 2
@@ -132,19 +132,16 @@ export default function Scene() {
     group.add(links)
     disposables.push(linkGeo)
 
-    let narrow = false
     const resize = () => {
       const w = el.clientWidth, h = el.clientHeight
       renderer.setSize(w, h)
-      narrow = w < 1024
-      const hw = narrow ? 8.4 : 10.2
+      const hw = 7.6
       const hh = hw * (h / w)
       camera.left = -hw
       camera.right = hw
       camera.top = hh
       camera.bottom = -hh
       camera.clearViewOffset()
-      if (!narrow) camera.setViewOffset(w, h, -w * 0.16, 0, w, h)
       camera.updateProjectionMatrix()
     }
     resize()

@@ -13,7 +13,6 @@
     "prelint": "vite build --logLevel warn"
   },
   "dependencies": {
-    "@lucasmarkes/hairline": "^0.5.1",
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.1.2",
     "gsap": "^3.15.0",
