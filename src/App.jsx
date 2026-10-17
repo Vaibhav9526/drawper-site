@@ -215,7 +215,6 @@ function Footer() {
         <span className="flex items-center gap-2 text-text"><img src="/logo.svg" width="20" height="20" alt="" className="rounded-[5px]" /> Drawper</span>
         <span className="flex gap-4">
           <a href={REPO} target="_blank" rel="noreferrer" className="hover:text-text transition-colors">GitHub</a>
-          <a href="https://github.com/helloianneo" target="_blank" rel="noreferrer" className="hover:text-text transition-colors">Sketch style: Ian</a>
         </span>
       </div>
     </footer>

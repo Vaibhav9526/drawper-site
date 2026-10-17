@@ -4,6 +4,8 @@ import Icon from './Icons'
 
 // A tiny working Drawper canvas: drag the tables, toggle the arrow (A),
 // and the generated code changes the way it does in the extension.
+const highlightAll = (code) => code.split('\n').map(highlight).join('\n')
+
 const W = 560
 const H = 290
 const TW = 176
@@ -164,8 +166,16 @@ export default function DrawCanvas() {
             <Icon name={copied ? 'check' : 'copy'} size={13} /> {copied ? 'Copied' : f.name}
           </button>
         </div>
-        <pre className="code-scroll h-[176px] overflow-auto px-3.5 pb-3 pt-2 text-[11.5px] leading-[1.7] font-mono text-text/90">
-          <code dangerouslySetInnerHTML={{ __html: f.code.split('\n').map(highlight).join('\n') }} />
+        {/* every tab sits in the same grid cell, so the card is as tall as the longest file: no clipping, no jump */}
+        <pre className="code-scroll grid overflow-x-auto px-3.5 pb-3.5 pt-2 text-[11.5px] leading-[1.65] font-mono text-text/90">
+          {Object.entries(files).map(([k, v]) => (
+            <code
+              key={k}
+              aria-hidden={k !== tab}
+              className={`col-start-1 row-start-1 whitespace-pre-wrap break-words ${k === tab ? '' : 'invisible pointer-events-none'}`}
+              dangerouslySetInnerHTML={{ __html: highlightAll(v.code) }}
+            />
+          ))}
         </pre>
       </div>
     </div>
