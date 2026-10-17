@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prelint": "vite build --logLevel warn"
   },
   "dependencies": {
     "@lucasmarkes/hairline": "^0.5.1",
@@ -19,5 +23,13 @@
     "tailwindcss": "^4.3.3",
     "three": "^0.186.1",
     "vite": "^8.3.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "husky": "^9.1.7"
   }
 }

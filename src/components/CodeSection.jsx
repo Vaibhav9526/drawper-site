@@ -92,11 +92,11 @@ function highlight(line) {
     .join('')
 }
 
-function Canvas() {
-  // miniature of Drawper's table nodes. The arrow starts at the table that holds the key.
-  const ink = '#2e2936'
-  const mute = '#8b8594'
-  const Table = ({ x, y, name, rows }) => (
+const ink = '#2e2936'
+const mute = '#8b8594'
+
+function Table({ x, y, name, rows }) {
+    return (
     <g transform={`translate(${x} ${y})`}>
       <rect width="220" height="124" fill="#fbf9f3" stroke={ink} strokeWidth="1" />
       <path d="M0 34H220" stroke={ink} strokeWidth="1" />
@@ -110,6 +110,10 @@ function Canvas() {
       ))}
     </g>
   )
+}
+
+function Canvas() {
+  // miniature of Drawper's table nodes. The arrow starts at the table that holds the key.
   return (
     <svg viewBox="0 0 560 360" className="w-full h-auto block" role="img" aria-label="An arrow from the orders table to the customers table">
       <defs>
