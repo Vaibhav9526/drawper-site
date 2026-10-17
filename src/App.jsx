@@ -1,10 +1,12 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Hub, Rebuild, Format, Terminal, Loupe, Branches, Phosphor, Drawer, Relay, Terrain } from '@lucasmarkes/hairline/react'
 import useSmoothScroll from './smooth'
 import Scene from './components/Scene'
 import Showcase from './components/Showcase'
 import CodeSection from './components/CodeSection'
+import Icon, { Mark } from './components/Icons'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -13,89 +15,100 @@ const REPO = 'https://github.com/Vaibhav9526/Drawper'
 const sources = ['Prisma', 'SQL', 'Drizzle', 'TypeORM', 'SQLAlchemy', 'Django', 'Mongoose']
 
 const features = [
-  ['Opens fast', 'A code-split webview of about 750 KB. The document is embedded in the page and the extension only activates when you use it.'],
-  ['Architecture panel', 'Client, API, worker, gateway, database, cache, queue and storage. Arrows between components become dependencies.'],
-  ['Schema panel', 'Tables and columns with primary keys, nullable, unique and foreign keys. Renames update every reference.'],
-  ['Relations by arrow', 'Join two tables with an arrow and the foreign key is created, then flows into every generator.'],
-  ['Relation queries', 'One click writes SQL joins plus Drizzle and Prisma relation queries for every relation, both directions.'],
-  ['Convert from the IDE', 'Turn an existing schema file into another format from a CodeLens, the context menu or the Command Palette.'],
-  ['Schema viewer', 'A CodeLens above schema definitions opens an ER diagram. Whole app mode shows every schema in the workspace.'],
-  ['Plain JSON files', 'Drawings are saved as .dpr and diff cleanly, so your sketches live in git next to the code.'],
+  { Fig: Hub, t: 'Architecture panel', d: 'Client, API, worker, gateway, database, cache, queue and storage. Arrows between components become dependencies.', label: 'A hub with tiles around it' },
+  { Fig: Drawer, t: 'Schema panel', d: 'Tables and columns with primary keys, nullable, unique and foreign keys. Renaming updates every reference.', label: 'A cabinet of drawers' },
+  { Fig: Rebuild, t: 'Relations by arrow', d: 'Join two tables with an arrow and the foreign key is created, then flows into every generator.', label: 'A dependency tree' },
+  { Fig: Relay, t: 'Relation queries', d: 'One click writes SQL joins plus Drizzle and Prisma relation queries for every relation, both directions.', label: 'A path lighting hop by hop' },
+  { Fig: Format, t: 'Code generation', d: 'SQL, Prisma, Drizzle, TypeScript types and a docker-compose.yml with a Node scaffold per service.', label: 'Lines snapping square' },
+  { Fig: Terminal, t: 'Convert from the IDE', d: 'Turn an existing schema file into another format from a CodeLens, the context menu or the Command Palette.', label: 'A terminal window' },
+  { Fig: Loupe, t: 'Schema viewer', d: 'A CodeLens above schema definitions opens an ER diagram. Whole app mode shows every schema in the workspace.', label: 'A loupe over a sheet' },
+  { Fig: Branches, t: 'Plain JSON files', d: 'Drawings are saved as .dpr and diff cleanly, so your sketches live in git next to the code.', label: 'A commit graph' },
+  { Fig: Phosphor, t: 'Opens fast', d: 'A code-split webview of about 750 KB. The document is embedded in the page and the extension only activates when you use it.', label: 'A dot matrix' },
 ]
 
 const steps = [
-  ['Install', 'code --install-extension drawper-0.0.1.vsix'],
-  ['New drawing', 'Drawper: New Drawing  (Ctrl+Shift+P)'],
-  ['Draw', 'Add components or tables, join them with the Arrow tool (A)'],
-  ['Generate', 'Click SQL, Prisma, Drizzle, TS types or docker-compose'],
+  ['download', 'Install', 'code --install-extension drawper-0.0.1.vsix'],
+  ['newfile', 'New drawing', 'Drawper: New Drawing (Ctrl+Shift+P)'],
+  ['draw', 'Draw', 'Add components or tables, join them with the Arrow tool (A)'],
+  ['braces', 'Generate', 'Click SQL, Prisma, Drizzle, TS types or docker-compose'],
 ]
 
-function Logo({ className = '' }) {
-  return <img src="/logo.png" alt="" width="28" height="28" className={`rounded-[7px] ${className}`} />
-}
+const facts = [
+  ['7', 'Schema formats read'],
+  ['6', 'Outputs generated'],
+  ['~750 KB', 'Webview up front'],
+  ['.dpr', 'Plain JSON, git-friendly'],
+]
 
 function Nav() {
   const [open, setOpen] = useState(false)
-  const links = [['Product', '#product'], ['Codegen', '#codegen'], ['Features', '#features'], ['Get started', '#start']]
+  const links = [['Product', '#product'], ['Features', '#features'], ['Codegen', '#codegen'], ['Get started', '#start']]
   return (
-    <header className="fixed top-3 inset-x-0 z-50 px-3 sm:px-4 pointer-events-none">
-      <div className="pointer-events-auto mx-auto max-w-[1000px] rounded-xl bg-paper/90 backdrop-blur-xl"
-        style={{ boxShadow: '0 0 0 1px rgb(46 41 54 / .14), 0 10px 30px -12px rgb(46 41 54 / .25)' }}>
-        <div className="h-14 pl-3.5 pr-2 flex items-center justify-between">
-          <a href="#top" className="flex items-center gap-2.5 font-semibold tracking-tight text-[16px]">
-            <Logo className="!w-7 !h-7" /> Drawper
+    <header className="fixed top-0 inset-x-0 z-50 bg-paper/90 backdrop-blur-md hl-b">
+      <div className="mx-auto max-w-[1400px] h-14 px-5 sm:px-6 lg:px-10 flex items-center justify-between">
+        <a href="#top" className="flex items-center gap-2.5 font-medium tracking-tight text-[16px]">
+          <Mark size={26} /> Drawper
+        </a>
+        <nav className="hidden md:flex items-center gap-8 text-[14px] text-mute">
+          {links.map(([l, h]) => (
+            <a key={l} href={h} className="hover:text-ink transition-colors">{l}</a>
+          ))}
+        </nav>
+        <div className="flex items-center gap-2">
+          <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-ink !h-9 !px-4 !text-[13px]">
+            GitHub <Icon name="arrow" size={14} />
           </a>
-          <nav className="hidden md:flex items-center gap-1 text-[14px] text-mute">
-            {links.map(([l, h]) => (
-              <a key={l} href={h} className="px-3.5 py-2 rounded-md hover:bg-ink/5 hover:text-ink transition-colors">{l}</a>
-            ))}
-          </nav>
-          <div className="flex items-center gap-2">
-            <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-ink !h-9 !px-4 !text-[13.5px]">GitHub ↗</a>
-            <button aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)} className="md:hidden h-9 w-9 rounded-md hover:bg-ink/5 grid place-items-center">
-              <span className="block w-4 space-y-[5px]">
-                <span className={`block h-px bg-ink transition-transform ${open ? 'translate-y-[3px] rotate-45' : ''}`} />
-                <span className={`block h-px bg-ink transition-transform ${open ? '-translate-y-[3px] -rotate-45' : ''}`} />
-              </span>
-            </button>
-          </div>
+          <button aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)} className="md:hidden h-9 w-9 grid place-items-center">
+            <Icon name={open ? 'close' : 'menu'} size={20} />
+          </button>
         </div>
-        {open && (
-          <nav className="md:hidden border-t rule px-2 py-2 flex flex-col">
-            {links.map(([l, h]) => (
-              <a key={l} href={h} onClick={() => setOpen(false)} className="px-3 py-3 rounded-md text-[15px] hover:bg-ink/5">{l}</a>
-            ))}
-          </nav>
-        )}
       </div>
+      {open && (
+        <nav className="md:hidden hl-t px-5 py-2 flex flex-col bg-paper">
+          {links.map(([l, h]) => (
+            <a key={l} href={h} onClick={() => setOpen(false)} className="py-3.5 text-[15px] border-b border-line last:border-b-0">{l}</a>
+          ))}
+        </nav>
+      )}
     </header>
   )
 }
 
 function Hero() {
   return (
-    <section id="top" className="relative min-h-[100svh] overflow-hidden">
-      <div className="relative z-10 mx-auto max-w-[1400px] px-5 sm:px-5 sm:px-6 lg:px-10 pt-32 lg:pt-20 lg:min-h-[100svh] lg:flex lg:items-center pointer-events-none">
+    <section id="top" className="relative overflow-hidden hl-b">
+      <div className="grid-bg absolute inset-0 pointer-events-none" />
+      <div className="relative z-10 mx-auto max-w-[1400px] px-5 sm:px-6 lg:px-10 pt-28 lg:pt-14 lg:min-h-[calc(100svh-84px)] lg:flex lg:items-center pointer-events-none">
         <div className="max-w-[640px] pointer-events-auto">
-          <p className="eyebrow hero-fade mb-7 inline-flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-coral" /> VS Code extension · .dpr files
+          <p className="eyebrow hero-fade mb-8 flex items-center gap-3">
+            <span className="h-px w-8 bg-ink" /> VS Code extension · .dpr files
           </p>
-          <h1 className="display text-[clamp(3.1rem,7.2vw,6.8rem)]">
+          <h1 className="display text-[clamp(3.2rem,7.4vw,7rem)]">
             <span className="line"><span>Sketch the</span></span>
-            <span className="line"><span><span className="serif">system.</span></span></span>
+            <span className="line"><span><b>system.</b></span></span>
             <span className="line"><span>Ship the</span></span>
-            <span className="line"><span><span className="serif">schema.</span></span></span>
+            <span className="line"><span><b>schema.</b></span></span>
           </h1>
-          <p className="hero-fade mt-8 max-w-[470px] text-[18px] leading-relaxed text-mute">
+          <p className="hero-fade mt-8 max-w-[480px] text-[18px] leading-relaxed text-mute">
             A fast whiteboard canvas inside VS Code for sketching system architecture and database schemas, then turning them into real code.
           </p>
           <div className="hero-fade mt-9 flex flex-wrap gap-3">
-            <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-sun">Get Drawper</a>
-            <a href="#product" className="btn btn-ghost">See it in action ↓</a>
+            <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-sun">Get Drawper <Icon name="arrow" size={15} /></a>
+            <a href="#product" className="btn btn-ghost">See it in action</a>
           </div>
         </div>
       </div>
       <Scene />
+      <div className="relative z-10 hl-t bg-paper/80 backdrop-blur-sm">
+        <div className="mx-auto max-w-[1400px] grid grid-cols-2 md:grid-cols-4">
+          {facts.map(([v, l], i) => (
+            <div key={l} className={`px-5 sm:px-6 lg:px-10 py-5 border-line ${i % 2 ? 'border-l' : ''} ${i > 0 ? 'md:border-l' : ''} ${i > 1 ? 'border-t md:border-t-0' : ''}`}>
+              <div className="text-[22px] font-light tracking-tight">{v}</div>
+              <div className="eyebrow mt-1">{l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   )
 }
@@ -103,13 +116,16 @@ function Hero() {
 function Strip() {
   const row = [...sources, ...sources, ...sources, ...sources]
   return (
-    <section className="relative bg-paper border-y rule overflow-hidden">
-      <div className="mx-auto max-w-[1400px] px-5 sm:px-5 sm:px-6 lg:px-10 py-5 flex items-center gap-8">
+    <section className="hl-b overflow-hidden">
+      <div className="mx-auto max-w-[1400px] px-5 sm:px-6 lg:px-10 py-5 flex items-center gap-8">
         <p className="eyebrow shrink-0 hidden sm:block">Reads &amp; writes</p>
         <div className="overflow-hidden flex-1 [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
-          <div className="marquee flex w-max gap-12 pr-12">
+          <div className="marquee flex w-max items-center gap-10 pr-10">
             {row.map((s, i) => (
-              <span key={i} className="font-mono text-[14px] text-ink/65 whitespace-nowrap">{s}</span>
+              <span key={i} className="flex items-center gap-10 whitespace-nowrap">
+                <span className="font-mono text-[14px]">{s}</span>
+                <span className="h-3 w-px bg-ink/30" />
+              </span>
             ))}
           </div>
         </div>
@@ -120,29 +136,32 @@ function Strip() {
 
 function Features() {
   return (
-    <section id="features" className="bg-paper">
+    <section id="features" className="hl-b">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-6 lg:px-10 py-20 lg:py-32">
-        <div className="grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-12 lg:gap-24">
-          <div className="lg:sticky lg:top-28 self-start">
-            <p className="eyebrow reveal mb-5">Features</p>
-            <h2 className="display reveal text-[clamp(2.4rem,5vw,4.8rem)]">
-              Small surface.<br /><span className="serif">Serious output.</span>
+        <div className="flex flex-wrap items-end justify-between gap-8 mb-14 lg:mb-16">
+          <div>
+            <p className="eyebrow reveal mb-5">02 — Features</p>
+            <h2 className="display reveal text-[clamp(2.5rem,6.5vw,6.2rem)]">
+              Small surface.<br /><b>Serious output.</b>
             </h2>
-            <p className="reveal mt-8 text-mute text-[17px] leading-relaxed max-w-sm">
-              Everything lives in one editor tab, next to the code it generates.
-            </p>
           </div>
-          <ul className="border-t rule">
-            {features.map(([t, d], i) => (
-              <li key={t} className="reveal group border-b rule py-7 grid grid-cols-[3rem_1fr] gap-4 hover:bg-ink/[0.025] transition-colors -mx-3 px-3">
-                <span className="eyebrow pt-1.5 group-hover:text-ink transition-colors">{String(i + 1).padStart(2, '0')}</span>
-                <div>
-                  <h3 className="text-[22px] font-medium tracking-tight">{t}</h3>
-                  <p className="text-mute mt-2 leading-relaxed text-[15.5px] max-w-lg">{d}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <p className="reveal max-w-sm text-mute text-[17px] leading-relaxed">
+            Everything lives in one editor tab, next to the code it generates. Move your pointer over the drawings.
+          </p>
+        </div>
+
+        <div className="figures grid grid-cols-[minmax(0,1fr)] sm:grid-cols-2 lg:grid-cols-3 hl-t hl-l">
+          {features.map(({ Fig, t, d, label }, i) => (
+            <article key={t} className="reveal hl-r hl-b p-5 sm:p-7 flex flex-col">
+              <div className="flex items-center justify-between mb-5">
+                <span className="eyebrow">{String(i + 1).padStart(2, '0')}</span>
+                <span className="eyebrow">{t.split(' ')[0]}</span>
+              </div>
+              <Fig intensity={0.6} label={label} theme="light" className="w-full" />
+              <h3 className="mt-7 text-[21px] font-medium tracking-tight">{t}</h3>
+              <p className="mt-2 text-mute leading-relaxed text-[15px]">{d}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -156,26 +175,29 @@ function GetStarted() {
     try { await navigator.clipboard.writeText(cmd); setCopied(true); setTimeout(() => setCopied(false), 1400) } catch { /* noop */ }
   }
   return (
-    <section id="start" className="bg-ink-2 text-paper">
+    <section id="start" className="hl-b">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-6 lg:px-10 py-20 lg:py-32 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-2 gap-14 lg:gap-24">
         <div>
-          <p className="eyebrow reveal mb-5 !text-paper/50">Get started</p>
-          <h2 className="display reveal text-[clamp(2.4rem,5vw,4.8rem)]">
-            Four steps to<br /><span className="serif">your first schema.</span>
+          <p className="eyebrow reveal mb-5">04 — Get started</p>
+          <h2 className="display reveal text-[clamp(2.5rem,5.5vw,5rem)]">
+            Four steps to<br /><b>your first schema.</b>
           </h2>
-          <button onClick={copy} className="reveal mt-10 w-full max-w-lg text-left rounded-xl border border-white/15 bg-white/[0.04] hover:bg-white/[0.07] transition-colors px-5 py-4 font-mono text-[14px] flex items-center justify-between gap-4">
-            <span className="truncate"><span className="text-sun">$</span> {cmd}</span>
-            <span className="eyebrow !text-paper/50 shrink-0">{copied ? 'Copied' : 'Copy'}</span>
+          <button onClick={copy} className="reveal ticks mt-10 w-full max-w-lg text-left hl-all bg-[#fbf9f3] hover:bg-paper-2 transition-colors px-5 py-4 font-mono text-[13.5px] flex items-center justify-between gap-4">
+            <span className="truncate"><span className="text-mute">$</span> {cmd}</span>
+            <span className="shrink-0 flex items-center gap-2 eyebrow">
+              <Icon name={copied ? 'check' : 'copy'} size={15} /> {copied ? 'Copied' : 'Copy'}
+            </span>
           </button>
         </div>
-        <ol className="border-t border-white/15">
-          {steps.map(([t, d], i) => (
-            <li key={t} className="reveal border-b border-white/15 py-6 grid grid-cols-[3rem_1fr] gap-4">
-              <span className="font-serif italic text-3xl text-sun leading-none">{i + 1}</span>
+        <ol className="hl-t">
+          {steps.map(([ic, t, d], i) => (
+            <li key={t} className="reveal hl-b py-6 grid grid-cols-[2.5rem_1fr_auto] gap-4 items-start">
+              <span className="eyebrow pt-1">0{i + 1}</span>
               <div>
                 <h3 className="text-xl font-medium tracking-tight">{t}</h3>
-                <p className="font-mono text-[13.5px] text-paper/55 mt-1.5">{d}</p>
+                <p className="font-mono text-[13px] text-mute mt-1.5 break-words">{d}</p>
               </div>
+              <Icon name={ic} size={24} className="text-ink" />
             </li>
           ))}
         </ol>
@@ -186,14 +208,19 @@ function GetStarted() {
 
 function CTA() {
   return (
-    <section className="bg-sun text-ink relative overflow-hidden">
-      <div className="mx-auto max-w-[1400px] px-5 sm:px-6 lg:px-10 py-24 lg:py-40">
-        <h2 className="display reveal text-[clamp(3.2rem,10vw,10rem)]">
-          Open a<br /><span className="serif">blank canvas.</span>
-        </h2>
-        <div className="reveal mt-12 flex flex-wrap gap-3">
-          <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-ink">Get Drawper</a>
-          <a href="#codegen" className="btn btn-ghost">See the output</a>
+    <section className="hl-b overflow-hidden">
+      <div className="mx-auto max-w-[1400px] px-5 sm:px-6 lg:px-10 py-20 lg:py-28 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <h2 className="display reveal text-[clamp(3rem,7.5vw,7.4rem)]">
+            Open a<br /><b>blank canvas.</b>
+          </h2>
+          <div className="reveal mt-10 flex flex-wrap gap-3">
+            <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-sun">Get Drawper <Icon name="arrow" size={15} /></a>
+            <a href="#codegen" className="btn btn-ghost">See the output</a>
+          </div>
+        </div>
+        <div className="figures reveal">
+          <Terrain intensity={0.7} label="Pillars rising around the pointer" theme="light" className="w-full" />
         </div>
       </div>
     </section>
@@ -202,11 +229,14 @@ function CTA() {
 
 function Footer() {
   return (
-    <footer className="bg-ink-2 text-paper/60">
-      <div className="mx-auto max-w-[1400px] px-5 sm:px-6 lg:px-10 py-10 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center text-[14px]">
-        <span className="flex items-center gap-2.5 text-paper"><Logo className="!w-6 !h-6" /> Drawper</span>
+    <footer>
+      <div className="mx-auto max-w-[1400px] px-5 sm:px-6 lg:px-10 py-8 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center text-[14px] text-mute">
+        <span className="flex items-center gap-2.5 text-ink"><Mark size={22} /> Drawper</span>
         <span>A fast whiteboard canvas inside VS Code.</span>
-        <a href={REPO} target="_blank" rel="noreferrer" className="hover:text-paper transition-colors">GitHub</a>
+        <span className="flex gap-6">
+          <a href={REPO} target="_blank" rel="noreferrer" className="hover:text-ink transition-colors">GitHub</a>
+          <a href="https://github.com/lucasmarkes/hairline" target="_blank" rel="noreferrer" className="hover:text-ink transition-colors">Figures by Hairline</a>
+        </span>
       </div>
     </footer>
   )
@@ -219,17 +249,15 @@ export default function App() {
   useLayoutEffect(() => {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
     const ctx = gsap.context(() => {
-      if (reduce) {
-        return
-      }
+      if (reduce) return
       const tl = gsap.timeline({ defaults: { ease: 'power4.out' } })
-      tl.from('.hero-fade', { y: 18, opacity: 0, duration: 0.9, stagger: 0.08 }, 0.1)
-        .from('.line > span', { yPercent: 110, duration: 1.2, stagger: 0.09 }, 0.05)
+      tl.from('.hero-fade', { y: 16, opacity: 0, duration: 0.9, stagger: 0.08 }, 0.1)
+        .from('.line > span', { yPercent: 110, duration: 1.1, stagger: 0.08 }, 0.05)
 
       gsap.utils.toArray('.reveal').forEach((el) => {
         gsap.from(el, {
-          y: 36, opacity: 0, duration: 0.9, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+          y: 28, opacity: 0, duration: 0.8, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 92%', once: true },
         })
       })
 
@@ -253,8 +281,8 @@ export default function App() {
         <Hero />
         <Strip />
         <Showcase />
-        <CodeSection />
         <Features />
+        <CodeSection />
         <GetStarted />
         <CTA />
       </main>
