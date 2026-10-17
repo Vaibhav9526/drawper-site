@@ -4,10 +4,10 @@
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
   --font-hand: "Caveat", "Segoe Print", cursive;
-  --color-bg: #0c0b0f;
-  --color-card: #15141a;
-  --color-card-2: #1b1a22;
-  --color-line: rgb(255 255 255 / 0.09);
+  --color-bg: #000000;
+  --color-card: #050506;
+  --color-card-2: #0a0a0c;
+  --color-line: rgb(255 255 255 / 0.12);
   --color-text: #ecebf0;
   --color-mute: #8d8a98;
   --color-sun: #ffd900;
@@ -38,18 +38,6 @@ body {
 
 .card { background: var(--color-card); border: 1px solid var(--color-line); border-radius: 10px; }
 
-/* torn-receipt edges, like the reference */
-.receipt {
-  background: var(--color-card-2);
-  --r: 5px;
-  --s: 16px;
-  -webkit-mask:
-    radial-gradient(circle at 50% 0, transparent var(--r), #000 calc(var(--r) + 0.5px)) top / var(--s) 51% repeat-x,
-    radial-gradient(circle at 50% 100%, transparent var(--r), #000 calc(var(--r) + 0.5px)) bottom / var(--s) 51% repeat-x;
-  mask:
-    radial-gradient(circle at 50% 0, transparent var(--r), #000 calc(var(--r) + 0.5px)) top / var(--s) 51% repeat-x,
-    radial-gradient(circle at 50% 100%, transparent var(--r), #000 calc(var(--r) + 0.5px)) bottom / var(--s) 51% repeat-x;
-}
 .dash { border-top: 1px dashed rgb(255 255 255 / 0.16); }
 
 .btn {
@@ -72,3 +60,24 @@ body {
 
 .code-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
 .code-scroll::-webkit-scrollbar-thumb { background: rgb(255 255 255 / .15); border-radius: 6px; }
+
+/* the page is a canvas: faint dot grid on pitch black */
+body {
+  background-image: radial-gradient(rgb(255 255 255 / 0.1) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.canvas-bg {
+  background-color: #000;
+  background-image: radial-gradient(rgb(255 255 255 / 0.14) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* hairline figures on black */
+.figures {
+  --hairline-plate: #000000;
+  --hairline-hi: #f5f5f7;
+  --hairline-edge: #b4b2bd;
+  --hairline-mid: #5b5964;
+  --hairline-lo: #26252b;
+  --hairline-stroke: 1;
+}

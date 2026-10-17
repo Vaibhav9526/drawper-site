@@ -101,27 +101,27 @@ export function ToasterSketch() {
     <Svg label="A mascot pushes the lever on a toaster and four generated files pop out: SQL, Prisma, Drizzle and TS">
       {slices.map((s) => (
         <g key={s.t}>
-          <rect x={s.x} y={s.y} width="58" height={186 - s.y} fill="#15141a" />
+          <rect x={s.x} y={s.y} width="58" height={186 - s.y} fill="#000" />
           <Note x={s.x + 29} y={s.y + 34} size={20} color={SUN}>{s.t}</Note>
           <path d={`M${s.x + 12} ${s.y + 48} h34 M${s.x + 12} ${s.y + 58} h22`} strokeWidth="1.6" />
         </g>
       ))}
       {/* toaster body */}
-      <path d="M214 186 L240 166 H486 L512 186 Z" fill="#15141a" />
-      <rect x="206" y="186" width="314" height="96" rx="20" fill="#15141a" />
+      <path d="M214 186 L240 166 H486 L512 186 Z" fill="#000" />
+      <rect x="206" y="186" width="314" height="96" rx="20" fill="#000" />
       <path d="M230 176 H252 M302 176 H324 M374 176 H396 M446 176 H468" strokeWidth="1.6" />
       <circle cx="486" cy="236" r="9" />
       <Ground x="196" y="284" w="340" />
       {/* lever */}
       <path d="M206 224 H184" strokeWidth="3" />
-      <circle cx="180" cy="224" r="7" fill="#15141a" />
+      <circle cx="180" cy="224" r="7" fill="#000" />
 
       <Xiaohei cx="104" cy="240" />
       <path d="M142 228 L174 224" stroke={SUN} strokeWidth="3" />
       {/* other hand holds the drawing */}
       <path d="M68 226 L48 190" stroke={SUN} strokeWidth="3" />
       <g transform="rotate(-9 52 160)">
-        <rect x="26" y="130" width="50" height="58" fill="#15141a" />
+        <rect x="26" y="130" width="50" height="58" fill="#000" />
         <path d="M36 146 h30 M36 158 h20 M36 170 h26" strokeWidth="1.6" />
       </g>
       <Ground x="60" y="298" w="90" />
@@ -138,7 +138,7 @@ export function ToasterSketch() {
 export function UnzipSketch() {
   return (
     <Svg label="A mascot pulls a zipper down a schema file, and an ER diagram appears underneath">
-      <rect x="196" y="40" width="268" height="170" fill="#15141a" />
+      <rect x="196" y="40" width="268" height="170" fill="#000" />
       {/* left half: code lines */}
       <path d="M214 66 h58 M226 86 h82 M226 104 h50 M226 122 h88 M214 142 h44 M214 164 h70" strokeWidth="2" />
       <path d="M214 66 h28" stroke={SUN} strokeWidth="3" />

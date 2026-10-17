@@ -4,8 +4,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 // Drawper's architecture canvas as an isometric line drawing: flat plates,
 // hairline edges, one yellow plate. Same projection family as the figures below.
-const PAPER = 0x24222d
-const PAPER_SIDE = 0x15141b
+const PAPER = 0x0b0b0e
+const PAPER_SIDE = 0x000000
 const INK = 0xd9d5e0
 const SUN = 0xffd900
 const SUN_SIDE = 0xb89b00

@@ -3,7 +3,8 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import useSmoothScroll from './smooth'
 import Scene from './components/Scene'
-import Receipt from './components/Receipt'
+import DrawCanvas from './components/DrawCanvas'
+import { Phosphor, Hub, Relay, Terminal, Loupe, Rebuild, Riffle, Branches } from '@lucasmarkes/hairline/react'
 import Icon, { Mark } from './components/Icons'
 import { SketchDefs, ForeignKeySketch, ToasterSketch, UnzipSketch } from './components/Illustrations'
 
@@ -27,14 +28,14 @@ const how = [
 ]
 
 const features = [
-  ['Opens fast', '~750 KB code-split webview.'],
-  ['Architecture panel', 'Client, API, worker, gateway, DB, cache, queue, storage.'],
-  ['Relation queries', 'SQL joins plus Drizzle and Prisma queries, both directions.'],
-  ['Convert in the IDE', 'CodeLens, context menu or Command Palette.'],
-  ['Whole app view', 'Every schema in the workspace on one canvas.'],
-  ['Renames cascade', 'Rename a table or column, every FK follows.'],
-  ['Icons and SVG', 'Icon library, SVG import, paste SVG markup.'],
-  ['Plain .dpr JSON', 'Diffs cleanly, lives in git.'],
+  [Phosphor, 'Opens fast', '~750 KB code-split webview.'],
+  [Hub, 'Architecture panel', 'Client, API, worker, gateway, DB, cache, queue, storage.'],
+  [Relay, 'Relation queries', 'SQL joins plus Drizzle and Prisma queries, both ways.'],
+  [Terminal, 'Convert in the IDE', 'CodeLens, context menu or Command Palette.'],
+  [Loupe, 'Whole app view', 'Every schema in the workspace on one canvas.'],
+  [Rebuild, 'Renames cascade', 'Rename a table or column, every FK follows.'],
+  [Riffle, 'Icons and SVG', 'Icon library, SVG import, paste SVG markup.'],
+  [Branches, 'Plain .dpr JSON', 'Diffs cleanly, lives in git.'],
 ]
 
 const steps = [
@@ -80,7 +81,7 @@ function CopyCmd({ cmd = CMD, className = '' }) {
 
 function Hero() {
   return (
-    <section id="top" className="mx-auto max-w-[1120px] px-4 pt-10 sm:pt-14 pb-8 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_380px] gap-8 lg:gap-12 items-center">
+    <section id="top" className="mx-auto max-w-[1120px] px-4 pt-10 sm:pt-14 pb-8 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_500px] gap-8 lg:gap-12 items-center">
       <div>
         <p className="mono-label hero-in mb-3">Drawper · VS Code extension</p>
         <h1 className="hero-in text-[clamp(2.3rem,5.4vw,3.9rem)] font-semibold tracking-[-0.04em] leading-[1.02]">
@@ -102,7 +103,7 @@ function Hero() {
           <a href="#product" className="btn btn-ghost">See the canvas</a>
         </div>
       </div>
-      <div className="hero-in"><Receipt /></div>
+      <div className="hero-in"><DrawCanvas /></div>
     </section>
   )
 }
@@ -158,12 +159,12 @@ function How() {
       </div>
       <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-3 gap-3">
         {how.map(({ Sketch, t, d }, i) => (
-          <article key={t} className="receipt reveal px-4 pt-6 pb-5 flex flex-col">
+          <article key={t} className="card reveal px-4 pt-4 pb-4 flex flex-col">
             <div className="flex items-center justify-between mono-label">
               <span>Step 0{i + 1}</span><span>of 03</span>
             </div>
             <div className="my-3"><Sketch /></div>
-            <div className="dash mb-3" />
+            <div className="border-t border-line mb-3" />
             <h3 className="text-[14.5px] font-medium">{t}</h3>
             <p className="mt-1 text-[12.5px] text-mute leading-relaxed">{d}</p>
           </article>
@@ -177,10 +178,11 @@ function Features() {
   return (
     <section id="features" className="mx-auto max-w-[1120px] px-4 pb-12">
       <h2 className="text-[19px] font-semibold tracking-tight mb-3">Features</h2>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {features.map(([t, d]) => (
-          <div key={t} className="card px-3.5 py-3 reveal">
-            <h3 className="text-[13.5px] font-medium">{t}</h3>
+      <div className="figures grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {features.map(([Fig, t, d]) => (
+          <div key={t} className="card px-3.5 pt-3 pb-3.5 reveal">
+            <Fig intensity={0.6} label={t} theme="dark" className="w-full max-w-[150px] mx-auto" />
+            <h3 className="mt-2.5 text-[13.5px] font-medium">{t}</h3>
             <p className="mt-0.5 text-[12.5px] text-mute leading-snug">{d}</p>
           </div>
         ))}
