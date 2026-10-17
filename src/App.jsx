@@ -5,7 +5,7 @@ import useSmoothScroll from './smooth'
 import Scene from './components/Scene'
 import DrawCanvas from './components/DrawCanvas'
 import { Phosphor, Hub, Relay, Terminal, Loupe, Rebuild, Riffle, Branches } from '@lucasmarkes/hairline/react'
-import Icon, { Mark } from './components/Icons'
+import Icon from './components/Icons'
 import { SketchDefs, ForeignKeySketch, ToasterSketch, UnzipSketch } from './components/Illustrations'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -16,9 +16,9 @@ const CMD = 'code --install-extension drawper-0.0.1.vsix'
 const sources = ['Prisma', 'SQL', 'Drizzle', 'TypeORM', 'SQLAlchemy', 'Django', 'Mongoose']
 
 const shots = [
-  { img: '/schema-editor.png', k: 'Schema editor', d: 'Tables, columns, PK / NULL / UQ / FK.' },
-  { img: '/relations.png', k: 'Relations', d: 'Arrow between tables adds the FK column.' },
-  { img: '/schema-viewer.png', k: 'Schema viewer', d: 'ER diagram for any schema file.' },
+  { img: '/schema-editor.png', alt: 'Drawper schema editor with a table, its columns and the SQL, Prisma, Drizzle and TS generate buttons', k: 'Schema editor', d: 'Tables, columns, PK / NULL / UQ / FK.' },
+  { img: '/relations.png', alt: 'Drawper canvas with an arrow from the orders table to the customers table that adds a foreign key', k: 'Relations', d: 'Arrow between tables adds the FK column.' },
+  { img: '/schema-viewer.png', alt: 'Drawper schema viewer showing an ER diagram of users, posts, comments and tags with foreign keys', k: 'Schema viewer', d: 'ER diagram for any schema file.' },
 ]
 
 const how = [
@@ -50,15 +50,15 @@ function Nav() {
     <header className="sticky top-0 z-50 bg-bg/85 backdrop-blur-md border-b border-line">
       <div className="mx-auto max-w-[1120px] h-12 px-4 flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2 font-semibold tracking-tight text-[14.5px]">
-          <Mark size={22} className="text-sun" /> Drawper
+          <img src="/logo.svg" width="24" height="24" alt="" className="rounded-[6px]" /> Drawper
         </a>
-        <nav className="hidden sm:flex items-center gap-5 text-[13px] text-mute">
+        <nav aria-label="Primary" className="hidden sm:flex items-center gap-5 text-[13px] text-mute">
           <a href="#product" className="hover:text-text transition-colors">Product</a>
           <a href="#how" className="hover:text-text transition-colors">How it works</a>
           <a href="#features" className="hover:text-text transition-colors">Features</a>
           <a href="#start" className="hover:text-text transition-colors">Start</a>
         </nav>
-        <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-sun">
+        <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-brand">
           GitHub <Icon name="arrow" size={13} />
         </a>
       </div>
@@ -85,7 +85,7 @@ function Hero() {
       <div>
         <p className="mono-label hero-in mb-3">Drawper · VS Code extension</p>
         <h1 className="hero-in text-[clamp(2.3rem,5.4vw,3.9rem)] font-semibold tracking-[-0.04em] leading-[1.02]">
-          Sketch the system.<br />Ship the <span className="text-sun">schema.</span>
+          Sketch the system.<br />Ship the <span className="text-brand-hi">schema.</span>
         </h1>
         <p className="hero-in mt-4 max-w-[460px] text-[15px] leading-relaxed text-mute">
           A fast whiteboard canvas inside VS Code. Draw architecture and database tables, get real code out.
@@ -99,7 +99,7 @@ function Hero() {
         </p>
         <div className="hero-in mt-5 max-w-[460px]"><CopyCmd /></div>
         <div className="hero-in mt-3 flex gap-2">
-          <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-sun">Get Drawper</a>
+          <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-brand">Get Drawper</a>
           <a href="#product" className="btn btn-ghost">See the canvas</a>
         </div>
       </div>
@@ -130,7 +130,7 @@ function Product() {
           <figcaption className="absolute left-3 top-2.5 mono-label">Architecture · isometric</figcaption>
         </figure>
         <figure className="card overflow-hidden md:col-span-2 reveal">
-          <img src="/architecture.png" alt="Architecture canvas in Drawper" className="w-full block" loading="lazy" />
+          <img src="/architecture.png" alt="Drawper architecture canvas: web-app, gateway, orders-api, database, cache, worker and queue connected by arrows" width="1500" height="800" className="w-full h-auto block" loading="lazy" decoding="async" />
           <figcaption className="flex items-center justify-between px-3 py-2 border-t border-line">
             <span className="text-[13px] font-medium">Architecture</span>
             <span className="mono-label">arrows → docker-compose</span>
@@ -138,7 +138,7 @@ function Product() {
         </figure>
         {shots.map((s) => (
           <figure key={s.k} className="card overflow-hidden reveal">
-            <img src={s.img} alt={`${s.k} in Drawper`} className="w-full block aspect-[16/9] object-cover object-left-top" loading="lazy" />
+            <img src={s.img} alt={s.alt} width="1500" height="800" className="w-full block aspect-[16/9] object-cover object-left-top" loading="lazy" decoding="async" />
             <figcaption className="px-3 py-2 border-t border-line">
               <span className="text-[13px] font-medium">{s.k}</span>
               <span className="block text-[12px] text-mute">{s.d}</span>
@@ -212,7 +212,7 @@ function Footer() {
   return (
     <footer className="border-t border-line">
       <div className="mx-auto max-w-[1120px] px-4 h-12 flex items-center justify-between text-[12.5px] text-mute">
-        <span className="flex items-center gap-2 text-text"><Mark size={18} className="text-sun" /> Drawper</span>
+        <span className="flex items-center gap-2 text-text"><img src="/logo.svg" width="20" height="20" alt="" className="rounded-[5px]" /> Drawper</span>
         <span className="flex gap-4">
           <a href={REPO} target="_blank" rel="noreferrer" className="hover:text-text transition-colors">GitHub</a>
           <a href="https://github.com/helloianneo" target="_blank" rel="noreferrer" className="hover:text-text transition-colors">Sketch style: Ian</a>
@@ -244,8 +244,9 @@ export default function App() {
   return (
     <div ref={root}>
       <SketchDefs />
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-brand focus:text-white focus:px-3 focus:py-2 focus:rounded-md">Skip to content</a>
       <Nav />
-      <main>
+      <main id="main">
         <Hero />
         <Reads />
         <Product />

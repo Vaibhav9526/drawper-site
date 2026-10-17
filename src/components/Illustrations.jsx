@@ -1,9 +1,9 @@
 // Hand-drawn explainer sketches in the "Ian Xiaohei" style (github.com/helloianneo,
 // MIT): one concept each, a deadpan bean mascot doing the core action, sparse
-// handwritten notes. Adapted for a dark page: off-white linework, yellow body,
-// black dot eyes, English notes in orange / blue / yellow.
+// handwritten notes. Adapted for a dark page: off-white linework, Drawper-blue body,
+// white dot eyes, English notes in orange / blue / white.
 const LINE = '#ece9e2'
-const SUN = '#ffd900'
+const BODY = '#2f7bff' // Drawper blue body (was yellow)
 const OR = '#ff9a3d'
 const BL = '#5aa9ff'
 
@@ -41,10 +41,10 @@ function Note({ x, y, children, color = LINE, size = 25, anchor = 'middle' }) {
 function Xiaohei({ cx, cy, s = 1 }) {
   return (
     <g transform={`translate(${cx} ${cy}) scale(${s})`}>
-      <path d="M0 -70 C 28 -70 41 -40 39 -4 C 37 21 22 31 0 31 C -22 31 -37 21 -39 -4 C -41 -40 -28 -70 0 -70Z" fill={SUN} stroke="#14120a" strokeWidth="1.6" />
-      <circle cx="-12" cy="-36" r="5" fill="#14120a" stroke="none" />
-      <circle cx="11" cy="-36" r="5" fill="#14120a" stroke="none" />
-      <path d="M-12 31 L-14 57 M12 31 L14 57" stroke={SUN} strokeWidth="3" />
+      <path d="M0 -70 C 28 -70 41 -40 39 -4 C 37 21 22 31 0 31 C -22 31 -37 21 -39 -4 C -41 -40 -28 -70 0 -70Z" fill={BODY} stroke="#0a0a0a" strokeWidth="1.6" />
+      <circle cx="-12" cy="-36" r="5" fill="#ffffff" stroke="none" />
+      <circle cx="11" cy="-36" r="5" fill="#ffffff" stroke="none" />
+      <path d="M-12 31 L-14 57 M12 31 L14 57" stroke={BODY} strokeWidth="3" />
     </g>
   )
 }
@@ -69,15 +69,15 @@ export function ForeignKeySketch() {
 
       <Xiaohei cx="318" cy="268" />
       {/* arm up to the needle */}
-      <path d="M356 252 L394 210" stroke={SUN} strokeWidth="3" />
-      <circle cx="396" cy="208" r="4" fill={SUN} stroke="none" />
+      <path d="M356 252 L394 210" stroke={BODY} strokeWidth="3" />
+      <circle cx="396" cy="208" r="4" fill={BODY} stroke="none" />
 
       {/* the thread: orange = the path */}
       <path d="M174 216 C 232 262, 292 156, 396 208 C 430 224, 440 176, 460 166" stroke={OR} strokeWidth="3" />
       <path d="M447 158 L461 166 L449 178" stroke={OR} strokeWidth="3" />
       {/* FK tag hanging on the thread */}
-      <rect x="236" y="170" width="44" height="26" rx="5" stroke={SUN} />
-      <Note x="258" y="190" color={SUN} size={22}>FK</Note>
+      <rect x="236" y="170" width="44" height="26" rx="5" stroke={LINE} />
+      <Note x="258" y="190" color={LINE} size={22}>FK</Note>
 
       <Note x="113" y="132">orders</Note>
       <path d="M113 140 v6" strokeWidth="1.8" />
@@ -102,7 +102,7 @@ export function ToasterSketch() {
       {slices.map((s) => (
         <g key={s.t}>
           <rect x={s.x} y={s.y} width="58" height={186 - s.y} fill="#000" />
-          <Note x={s.x + 29} y={s.y + 34} size={20} color={SUN}>{s.t}</Note>
+          <Note x={s.x + 29} y={s.y + 34} size={20} color={LINE}>{s.t}</Note>
           <path d={`M${s.x + 12} ${s.y + 48} h34 M${s.x + 12} ${s.y + 58} h22`} strokeWidth="1.6" />
         </g>
       ))}
@@ -117,9 +117,9 @@ export function ToasterSketch() {
       <circle cx="180" cy="224" r="7" fill="#000" />
 
       <Xiaohei cx="104" cy="240" />
-      <path d="M142 228 L174 224" stroke={SUN} strokeWidth="3" />
+      <path d="M142 228 L174 224" stroke={LINE} strokeWidth="3" />
       {/* other hand holds the drawing */}
-      <path d="M68 226 L48 190" stroke={SUN} strokeWidth="3" />
+      <path d="M68 226 L48 190" stroke={LINE} strokeWidth="3" />
       <g transform="rotate(-9 52 160)">
         <rect x="26" y="130" width="50" height="58" fill="#000" />
         <path d="M36 146 h30 M36 158 h20 M36 170 h26" strokeWidth="1.6" />
@@ -141,7 +141,7 @@ export function UnzipSketch() {
       <rect x="196" y="40" width="268" height="170" fill="#000" />
       {/* left half: code lines */}
       <path d="M214 66 h58 M226 86 h82 M226 104 h50 M226 122 h88 M214 142 h44 M214 164 h70" strokeWidth="2" />
-      <path d="M214 66 h28" stroke={SUN} strokeWidth="3" />
+      <path d="M214 66 h28" stroke={BL} strokeWidth="3" />
       {/* right half: diagram */}
       <rect x="352" y="56" width="42" height="28" />
       <rect x="414" y="84" width="40" height="28" />
@@ -149,16 +149,16 @@ export function UnzipSketch() {
       <path d="M394 70 H404 V84 M384 84 V136 M406 150 H434 V112" stroke={OR} strokeWidth="2.6" />
       {/* zipper */}
       <path d="M330 40 V204" strokeDasharray="4 5" strokeWidth="2.6" />
-      <path d="M330 204 h-6 l6 18 l6 -18 z" fill={SUN} stroke="none" />
+      <path d="M330 204 h-6 l6 18 l6 -18 z" fill={BODY} stroke="none" />
 
       <Xiaohei cx="416" cy="268" />
-      <path d="M380 252 C 360 244, 340 230, 332 214" stroke={SUN} strokeWidth="3" />
+      <path d="M380 252 C 360 244, 340 230, 332 214" stroke={BODY} strokeWidth="3" />
       <Ground x="380" y="326" w="90" />
 
       <Note x="268" y="26" color={BL}>schema.prisma</Note>
       <Note x="404" y="26" color={BL}>ER diagram</Note>
-      <Note x="250" y="262" color={SUN}>unzip it</Note>
-      <path d="M278 270 C 300 276, 318 270, 332 252" stroke={SUN} strokeWidth="1.8" strokeDasharray="6 6" />
+      <Note x="250" y="262" color={LINE}>unzip it</Note>
+      <path d="M278 270 C 300 276, 318 270, 332 252" stroke={LINE} strokeWidth="1.8" strokeDasharray="6 6" />
     </Svg>
   )
 }

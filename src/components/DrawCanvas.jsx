@@ -32,7 +32,7 @@ function Tool({ active, label, onClick, children, k }) {
       onClick={onClick}
       aria-pressed={active}
       title={label}
-      className={`relative h-8 w-8 grid place-items-center rounded-md transition-colors ${active ? 'bg-sun/20 text-sun' : 'text-mute hover:text-text hover:bg-white/5'}`}
+      className={`relative h-8 w-8 grid place-items-center rounded-md transition-colors ${active ? 'bg-brand/20 text-[#6aa5ff]' : 'text-mute hover:text-text hover:bg-white/5'}`}
     >
       {children}
       <span className="absolute right-1 bottom-0.5 text-[8px] font-mono opacity-60">{k}</span>
@@ -129,15 +129,15 @@ export default function DrawCanvas() {
           {['customers', 'orders'].map((id) => (
             <g key={id} transform={`translate(${pos[id].x} ${pos[id].y})`} onPointerDown={down(id)} className="cursor-grab active:cursor-grabbing">
               <rect width={TW} height={TH} rx="9" fill="#050506" stroke="#8d8a98" strokeWidth="1" />
-              <rect width={TW} height="26" rx="9" fill="#2a1f00" />
-              <rect y="17" width={TW} height="9" fill="#2a1f00" />
+              <rect width={TW} height="26" rx="9" fill="#001a4d" />
+              <rect y="17" width={TW} height="9" fill="#001a4d" />
               <path d={`M0 26H${TW}`} stroke="#8d8a98" strokeWidth="1" />
-              <text x={TW / 2} y="17" textAnchor="middle" fill="#ffe9a0">{id}</text>
+              <text x={TW / 2} y="17" textAnchor="middle" fill="#cfe0ff">{id}</text>
               {rowsFor(id, linked).map(([n, t, k], i) => (
                 <g key={n} transform={`translate(0 ${46 + i * 20})`}>
                   <text x="12" fill="#ecebf0">{n}</text>
                   <text x="104" fill="#8d8a98">{t}</text>
-                  {k && <text x={TW - 12} textAnchor="end" fill={k === 'FK' ? '#87dac7' : '#ffd900'}>{k}</text>}
+                  {k && <text x={TW - 12} textAnchor="end" fill={k === 'FK' ? '#87dac7' : '#6aa5ff'}>{k}</text>}
                 </g>
               ))}
             </g>

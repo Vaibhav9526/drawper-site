@@ -75,7 +75,7 @@ export function highlight(line) {
       if (i % 2) return `<span style="color:#87dac7">${p}</span>`
       return p
         .replace(KW, '<span style="color:#ff8f8c">$1</span>')
-        .replace(TY, '<span style="color:#ffd900">$1</span>')
+        .replace(TY, '<span style="color:#7fb2ff">$1</span>')
         .replace(/(@\w+)/g, '<span style="color:#eaaa2a">$1</span>')
     })
     .join('')

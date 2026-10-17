@@ -10,7 +10,8 @@
   --color-line: rgb(255 255 255 / 0.12);
   --color-text: #ecebf0;
   --color-mute: #8d8a98;
-  --color-sun: #ffd900;
+  --color-brand: #005fff;
+  --color-brand-hi: #4d94ff;
   --color-orange: #ff9a3d;
   --color-blue: #5aa9ff;
 }
@@ -26,7 +27,7 @@ body {
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
-::selection { background: var(--color-sun); color: #111; }
+::selection { background: var(--color-brand); color: #fff; }
 
 .mono-label {
   font-family: var(--font-mono);
@@ -46,8 +47,8 @@ body {
   font-size: 13px; font-weight: 500;
   transition: background-color .15s, color .15s, border-color .15s;
 }
-.btn-sun { background: var(--color-sun); color: #111; }
-.btn-sun:hover { background: #ffe433; }
+.btn-brand { background: var(--color-brand); color: #fff; }
+.btn-brand:hover { background: #1a70ff; }
 .btn-ghost { border: 1px solid var(--color-line); }
 .btn-ghost:hover { border-color: rgb(255 255 255 / .3); }
 

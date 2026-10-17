@@ -7,8 +7,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 const PAPER = 0x0b0b0e
 const PAPER_SIDE = 0x000000
 const INK = 0xd9d5e0
-const SUN = 0xffd900
-const SUN_SIDE = 0xb89b00
+const SUN = 0x005fff
+const SUN_SIDE = 0x0040b0
 
 const W = 2.4, T = 0.34, D = 1.1
 
@@ -85,7 +85,7 @@ export default function Scene() {
     document.fonts.load('500 40px "Geist Mono"').finally(() => {
       if (dead) return
       NODES.forEach((n, i) => {
-        const tex = labelTexture(n.name, n.sub, n.pale || n.accent)
+        const tex = labelTexture(n.name, n.sub, n.pale)
         const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, toneMapped: false })
         const plane = new THREE.Mesh(labelGeo, mat)
         plane.rotation.x = -Math.PI / 2
@@ -99,7 +99,7 @@ export default function Scene() {
     const linkPts = []
     const packets = []
     const packetGeo = new THREE.BoxGeometry(0.16, 0.16, 0.16)
-    const packetMat = new THREE.MeshBasicMaterial({ color: SUN })
+    const packetMat = new THREE.MeshBasicMaterial({ color: 0xffffff })
     const packetEdge = new THREE.EdgesGeometry(packetGeo)
     disposables.push(packetGeo, packetMat, packetEdge)
     const y = T / 2 + 0.01

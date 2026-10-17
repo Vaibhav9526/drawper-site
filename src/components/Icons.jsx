@@ -33,15 +33,3 @@ export default function Icon({ name, size = 22, className = '' }) {
     </svg>
   )
 }
-
-// Drawper mark redrawn as hairline: the D plate with a pen laid across it.
-export function Mark({ size = 28, className = '' }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="miter" className={className} aria-hidden="true">
-      <path d="M5 3.500h10.500C23 3.500 27.500 9 27.500 16S23 28.500 15.500 28.500H5z" />
-      <path d="M10 22.500 22.500 8.500" />
-      <path d="m22.500 8.500 2.500 2.200-12.500 14-3.800 1.500 1.300-3.800z" />
-      <path d="M20 10.700 22.500 13" />
-    </svg>
-  )
-}
