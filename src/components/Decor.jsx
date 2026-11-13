@@ -49,23 +49,6 @@ export function Clouds() {
   )
 }
 
-// A small swift: a body and two curved wings that flap in bursts and glide in between
-// (the motion is in ../fx.js). The wings are drawn as one raised pair and rotate about the shoulder.
-export function Flock() {
-  return (
-    <div aria-hidden="true" className="fixed inset-0 pointer-events-none z-[5] overflow-hidden">
-      {Array.from({ length: 7 }, (_, i) => (
-        <svg key={i} data-bird={i} viewBox="0 0 64 34" width={i === 0 ? 40 : 28 + (i % 3) * 4} className="absolute left-0 top-0 will-change-transform">
-          <g data-wl><path d="M31 18 C27 9 16 3 2 6 C12 8 19 12 24 18 C27 20 29 20 31 18Z" fill="#0d1b3e" fillOpacity=".78" /></g>
-          <g data-wr><path d="M33 18 C37 9 48 3 62 6 C52 8 45 12 40 18 C37 20 35 20 33 18Z" fill="#0d1b3e" fillOpacity=".78" /></g>
-          <path d="M28 18 C29 15 35 15 36 18 C37 21 33 25 32 29 C31 25 27 21 28 18Z" fill="#0d1b3e" fillOpacity=".9" />
-          <circle cx="32" cy="15.500" r="2.300" fill="#0d1b3e" />
-        </svg>
-      ))}
-    </div>
-  )
-}
-
 export function Leaves() {
   return (
     <div aria-hidden="true" data-leaves className="fixed inset-0 pointer-events-none z-[6] overflow-hidden">

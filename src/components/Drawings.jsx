@@ -29,7 +29,7 @@ const Frame = ({ id, label, children }) => (
 // a chunky component block: coloured face over a darker thick edge
 function Block({ x, y, w = 138, h = 66, fill, label, sub, light = false }) {
   return (
-    <g>
+    <g data-pop>
       <rect x={x} y={y + 7} width={w} height={h} rx="16" fill={INK} />
       <rect x={x} y={y} width={w} height={h} rx="16" fill={fill} stroke={INK} strokeWidth="2.600" />
       <text x={x + w / 2} y={y + h / 2 - 1} textAnchor="middle" fontFamily={DISPLAY} fontWeight="600" fontSize="17" fill={light ? '#fff' : INK}>{label}</text>
@@ -39,16 +39,16 @@ function Block({ x, y, w = 138, h = 66, fill, label, sub, light = false }) {
 }
 
 const Arrow = ({ id, d, dash, w = 2.4 }) => (
-  <path d={d} fill="none" stroke={INK} strokeWidth={w} strokeDasharray={dash} markerEnd={`url(#ah-${id})`} />
+  <path d={d} fill="none" stroke={INK} strokeWidth={w} strokeDasharray={dash} markerEnd={`url(#ah-${id})`} data-stroke data-arrow />
 )
 const Note = ({ x, y, children, rot = 0, color = '#e0453f', size = 25, anchor = 'start' }) => (
-  <text x={x} y={y} fontFamily="Caveat, cursive" fontWeight="600" fontSize={size} fill={color} textAnchor={anchor} transform={`rotate(${rot} ${x} ${y})`}>{children}</text>
+  <text data-write x={x} y={y} fontFamily="Caveat, cursive" fontWeight="600" fontSize={size} fill={color} textAnchor={anchor} transform={`rotate(${rot} ${x} ${y})`}>{children}</text>
 )
 
 function Tbl({ x, y, w = 196, title, head, rows }) {
   const h = 38 + rows.length * 26 + 8
   return (
-    <g>
+    <g data-pop>
       <rect x={x} y={y + 7} width={w} height={h} rx="14" fill={INK} />
       <rect x={x} y={y} width={w} height={h} rx="14" fill={C.paper} stroke={INK} strokeWidth="2.600" />
       <path d={`M${x} ${y + 38} V${y + 14} a14 14 0 0 1 14 -14 H${x + w - 14} a14 14 0 0 1 14 14 V${y + 38}Z`} fill={head} stroke={INK} strokeWidth="2.600" />
@@ -83,7 +83,7 @@ export function ArchitectureDrawing() {
       <Block x={628} y={134} fill={C.coral} label="cache" sub="redis" />
       <Block x={628} y={262} fill={C.sky} label="jobs" sub="queue · rabbitmq" />
       <Note x={120} y={92} rot={-6}>draw the boxes</Note>
-      <path d="M150 104 C 170 120, 180 138, 190 156" fill="none" stroke="#e0453f" strokeWidth="2" markerEnd={`url(#ah-${id})`} />
+      <path d="M150 104 C 170 120, 180 138, 190 156" fill="none" stroke="#e0453f" strokeWidth="2" markerEnd={`url(#ah-${id})`} data-stroke data-arrow />
       <Note x={36} y={352} size={27}>arrows become dependencies → docker-compose.yml</Note>
     </Frame>
   )
@@ -95,10 +95,10 @@ export function RelationsDrawing() {
     <Frame id={id} label="Hand-drawn canvas: an arrow from the orders table to the customers table adds a foreign key column">
       <Tbl x={500} y={36} title="customers" head={C.sun} rows={[['id', 'int', 'PK'], ['email', 'text', ''], ['created_at', 'timestamp', '']]} />
       <Tbl x={70} y={190} title="orders" head={C.mint} rows={[['id', 'int', 'PK'], ['total', 'numeric', ''], ['created_at', 'timestamp', ''], ['customer_id', 'int', 'FK']]} />
-      <path d="M280 236 C 360 220, 400 150, 492 130" fill="none" stroke={INK} strokeWidth="3.200" markerEnd={`url(#ah-${id})`} />
+      <path d="M280 236 C 360 220, 400 150, 492 130" fill="none" stroke={INK} strokeWidth="3.200" markerEnd={`url(#ah-${id})`} data-stroke data-arrow />
       <Note x={330} y={168} rot={-10} size={30}>arrow in,</Note>
       <Note x={344} y={198} rot={-10} size={30}>foreign key out!</Note>
-      <g transform="translate(560 262)">
+      <g data-pop transform="translate(560 262)">
         <rect y="6" width="58" height="52" rx="12" fill={INK} />
         <rect width="58" height="52" rx="12" fill={C.paper} stroke={INK} strokeWidth="2.600" />
         <text x="29" y="34" textAnchor="middle" fontFamily={DISPLAY} fontWeight="600" fontSize="28" fill={INK}>A</text>
@@ -112,9 +112,9 @@ export function ViewerDrawing() {
   const id = 'erd'
   return (
     <Frame id={id} label="Hand-drawn ER diagram of users, posts, comments and tags with foreign keys">
-      <path d="M232 106 H 296" fill="none" stroke={INK} strokeWidth="2.400" markerEnd={`url(#ah-${id})`} />
-      <path d="M418 188 V 238" fill="none" stroke={INK} strokeWidth="2.400" markerEnd={`url(#ah-${id})`} />
-      <path d="M516 110 H 570 V 176 H 590" fill="none" stroke={INK} strokeWidth="2.400" markerEnd={`url(#ah-${id})`} />
+      <path d="M232 106 H 296" fill="none" stroke={INK} strokeWidth="2.400" markerEnd={`url(#ah-${id})`} data-stroke data-arrow />
+      <path d="M418 188 V 238" fill="none" stroke={INK} strokeWidth="2.400" markerEnd={`url(#ah-${id})`} data-stroke data-arrow />
+      <path d="M516 110 H 570 V 176 H 590" fill="none" stroke={INK} strokeWidth="2.400" markerEnd={`url(#ah-${id})`} data-stroke data-arrow />
       <Tbl x={36} y={44} w={190} title="users" head={C.blue} rows={[['id', 'int', 'PK'], ['name', 'text', ''], ['email', 'text', '']]} />
       <Tbl x={300} y={44} w={212} title="posts" head={C.sun} rows={[['id', 'int', 'PK'], ['user_id', 'int', 'FK'], ['title', 'text', '']]} />
       <Tbl x={300} y={238} w={212} title="comments" head={C.mint} rows={[['id', 'int', 'PK'], ['post_id', 'int', 'FK'], ['body', 'text', '']]} />

@@ -3,7 +3,7 @@ import Hero from './components/Hero'
 import Demo from './components/Demo'
 import Icon from './components/Icon'
 import Words from './components/Words'
-import { Clouds, Defs, Flock, Haze, Leaves } from './components/Decor'
+import { Clouds, Defs, Haze, Leaves } from './components/Decor'
 import FooterScene from './components/FooterScene'
 import { ArchitectureDrawing, Glyph, RelationsDrawing, ViewerDrawing } from './components/Drawings'
 import useSmoothScroll from './smooth'
@@ -14,9 +14,9 @@ import { initScroll } from './fx'
 const sources = ['Prisma', 'SQL', 'Drizzle', 'TypeORM', 'SQLAlchemy', 'Django', 'Mongoose']
 
 const shots = [
-  { Art: ArchitectureDrawing, k: 'Architecture canvas', d: 'Drop clients, APIs, workers, queues and databases. Arrows become dependencies, then a docker-compose.yml.' },
-  { Art: RelationsDrawing, k: 'Relations by arrow', d: 'Draw an arrow from one table to another and the foreign key column is added for you.' },
-  { Art: ViewerDrawing, k: 'Schema viewer', d: 'Open any schema file and see an ER diagram, followed across imports.' },
+  { Art: ArchitectureDrawing, step: '01', verb: 'Draw', k: 'Drop the boxes', d: 'Clients, APIs, workers, queues and databases go on the canvas. Join them with arrows and they become dependencies.', out: 'docker-compose.yml', note: 'One service per box, wired the way you drew it.' },
+  { Art: RelationsDrawing, step: '02', verb: 'Link', k: 'Drag an arrow', d: 'Draw from one table to another. The foreign key column is added for you and flows into every generator.', out: 'customer_id  FK', note: 'SQL, Prisma, Drizzle and TS stay in step.' },
+  { Art: ViewerDrawing, step: '03', verb: 'Read', k: 'Open any schema file', d: 'Prisma, SQL, Drizzle, TypeORM, SQLAlchemy, Django or Mongoose. See the ER diagram, followed across imports.', out: 'ER diagram', note: 'Or flip on Whole app to see every schema at once.' },
 ]
 
 const features = [
@@ -84,23 +84,9 @@ function Reads() {
   )
 }
 
-// the wooden stand under each drawing board: a ledge, three legs and a cross brace
-function Legs() {
-  const wood = { fill: '#c08a52', stroke: '#6b4423', strokeWidth: 2.6, strokeLinejoin: 'round' }
-  return (
-    <svg data-legs viewBox="0 0 640 170" className="mx-auto block w-[64%] max-w-[600px] relative z-0" aria-hidden="true">
-      <ellipse cx="320" cy="162" rx="290" ry="8" fill="#0d1b3e" opacity=".18" />
-      <g filter="url(#wob)" strokeLinecap="round">
-        <path d="M120 16 L74 156 H108 L158 16Z" {...wood} />
-        <path d="M520 16 L566 156 H532 L482 16Z" {...wood} />
-        <path d="M298 16 L292 150 H348 L342 16Z" {...wood} />
-        <path d="M104 92 H536 V108 H96Z" fill="#d6a468" stroke="#6b4423" strokeWidth="2.6" strokeLinejoin="round" />
-        <rect x="28" y="0" width="584" height="18" rx="5" fill="#d6a468" stroke="#6b4423" strokeWidth="2.6" />
-        <path d="M44 5.500 H596" stroke="#efcf9f" strokeWidth="2.200" />
-        <path d="M82 148 H104 M536 148 H558 M296 142 H344" stroke="#3d2814" strokeWidth="4" />
-      </g>
-    </svg>
-  )
+// A sketch sheet taped to the wall: the diagram inks itself in as you scroll (see data-sheet in ../fx.js).
+function Tape({ className }) {
+  return <span aria-hidden="true" className={`absolute z-10 h-6 w-20 bg-[#ffd900]/55 border-x border-dashed border-black/10 shadow-[0_1px_2px_rgb(0_0_0/0.15)] backdrop-blur-[1px] ${className}`} />
 }
 
 function Product() {
@@ -109,20 +95,29 @@ function Product() {
       <div className="mx-auto w-full max-w-[1120px] px-4">
         <p className="mono-label">Drawn, not screenshotted</p>
         <Words as="h2" className={`mt-2 ${H2}`}>Draw it. Link it. Ship it.</Words>
-        <p className="mt-3 max-w-[560px] text-[16px] leading-relaxed text-ink/70">Sketches of what you get inside VS Code: the canvas, the arrow, the viewer.</p>
+        <p className="mt-3 max-w-[560px] text-[16px] leading-relaxed text-ink/70">Scroll and watch each sketch get inked in, the way it happens on the canvas in VS Code.</p>
       </div>
-      <div className="mt-12 space-y-10 pb-6">
-        {shots.map((s) => (
-          <figure key={s.k} data-easel className="mx-auto w-full max-w-[1040px] px-4">
-            <div data-board className="canvas-frame relative z-10 bg-[#fbf6ec] will-change-transform">
-              <s.Art />
-              <figcaption className="px-5 py-4 border-t border-black/10 bg-[#fbf6ec] flex flex-wrap items-baseline gap-x-3">
-                <span className="font-display text-[18px] font-semibold tracking-[-0.02em]">{s.k}</span>
-                <span className="text-[14px] text-ink/65 text-pretty">{s.d}</span>
-              </figcaption>
+      <div className="mt-16 space-y-24 lg:space-y-32">
+        {shots.map((s, i) => (
+          <article key={s.k} className="mx-auto max-w-[1120px] px-4 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.5fr)] gap-8 lg:gap-14 items-center">
+            <div data-reveal className={i % 2 ? 'lg:order-2' : ''}>
+              <p className="font-mono text-[12px] tracking-[0.1em] uppercase text-ink/50">{s.step} · {s.verb}</p>
+              <h3 className="mt-3 text-[clamp(1.6rem,2.6vw,2.2rem)] font-semibold tracking-[-0.035em] leading-[1.1]">{s.k}</h3>
+              <p className="mt-3 text-[16px] leading-relaxed text-ink/70 text-pretty">{s.d}</p>
+              <div className="mt-5 inline-flex items-center gap-2.5 h-10 pl-3 pr-4 rounded-full bg-white/70 border border-white/80 backdrop-blur-md text-[13px]">
+                <span className="text-tangerine hand text-[22px] leading-none" aria-hidden="true">→</span>
+                <span className="font-mono text-[12.5px]">{s.out}</span>
+              </div>
+              <p className="mt-3 text-[13.5px] text-ink/55">{s.note}</p>
             </div>
-            <Legs />
-          </figure>
+            <div className={`relative ${i % 2 ? 'lg:order-1' : ''}`}>
+              <div data-sheet style={{ rotate: i % 2 ? '1.1deg' : '-1.1deg' }} className="relative rounded-[6px] bg-white shadow-[0_30px_60px_-30px_rgb(13_27_62/0.5),0_2px_0_rgb(13_27_62/0.06)] border border-black/5 overflow-visible">
+                <Tape className="-top-3 left-8 -rotate-[5deg]" />
+                <Tape className="-top-3 right-8 rotate-[4deg]" />
+                <div className="overflow-hidden rounded-[6px]"><s.Art /></div>
+              </div>
+            </div>
+          </article>
         ))}
       </div>
     </section>
@@ -182,7 +177,6 @@ export default function App() {
     <div ref={root} className="relative overflow-x-clip">
       <Defs />
       <Clouds />
-      <Flock />
       <Leaves />
       <Haze />
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-brand focus:text-white focus:px-3 focus:py-2 focus:rounded-md">Skip to content</a>
