@@ -21,7 +21,7 @@ export default function Toolbar({ tools, tool, onTool, color, onColor, size, onS
           onClick={() => onTool(tool === t.id && t.id !== 'select' ? null : t.id)}
           aria-pressed={tool === t.id}
           title={t.label}
-          className={`h-9 w-9 shrink-0 grid place-items-center rounded-full transition-colors ${tool === t.id ? 'bg-ink text-white' : 'text-ink/70 hover:bg-ink/8'}`}
+          className={`h-9 w-9 shrink-0 grid place-items-center rounded-full transition-colors ${tool === t.id ? 'bg-ink text-white' : 'text-ink/80 hover:bg-ink/8'}`}
         >
           <Icon name={t.icon} size={17} />
         </button>
@@ -54,10 +54,10 @@ export default function Toolbar({ tools, tool, onTool, color, onColor, size, onS
         ))}
       </div>
       {sep}
-      <button onClick={onUndo} disabled={!canUndo} title="Undo" className="h-9 w-9 shrink-0 grid place-items-center rounded-full text-ink/70 hover:bg-ink/8 disabled:opacity-30 disabled:hover:bg-transparent">
+      <button onClick={onUndo} disabled={!canUndo} title="Undo" className="h-9 w-9 shrink-0 grid place-items-center rounded-full text-ink/80 hover:bg-ink/8 disabled:opacity-30 disabled:hover:bg-transparent">
         <Icon name="undo" size={17} />
       </button>
-      <button onClick={onClear} disabled={!canUndo} title="Clear drawing" className="h-9 w-9 shrink-0 grid place-items-center rounded-full text-ink/70 hover:bg-ink/8 disabled:opacity-30 disabled:hover:bg-transparent">
+      <button onClick={onClear} disabled={!canUndo} title="Clear drawing" className="h-9 w-9 shrink-0 grid place-items-center rounded-full text-ink/80 hover:bg-ink/8 disabled:opacity-30 disabled:hover:bg-transparent">
         <Icon name="trash" size={17} />
       </button>
     </div>

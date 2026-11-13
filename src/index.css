@@ -8,7 +8,7 @@
   --color-paper: #e9f2ff;
   --color-card: #fbfdff;
   --color-ink: #0d1b3e;
-  --color-mute: #55658a;
+  --color-mute: #44527a;
   --color-line: rgb(13 27 62 / 0.13);
   --color-brand: #005fff;
   --color-brand-hi: #3d8bff;
@@ -24,7 +24,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 html {
-  background: linear-gradient(180deg, #8fbcff 0%, #b9d6ff 8%, #dcebff 20%, #e9f2ff 36%, #f2eff0 52%, #fde6cf 67%, #ffd2a2 79%, #ffb27c 90%, #e88a7c 100%);
+  background: linear-gradient(180deg, #8fbcff 0%, #b9d6ff 8%, #dcebff 20%, #e9f2ff 36%, #f2eff0 52%, #fde6cf 66%, #ffd2a2 76%, #ffb989 84%, #f6a08a 90%, #f3978c 100%);
 }
 body {
   background: transparent;

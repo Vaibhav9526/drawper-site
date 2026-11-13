@@ -162,7 +162,7 @@ export default function PlayBoard({ onSchema }) {
                     <span className="font-mono text-[13px] font-medium text-[#0a3fa8] truncate">{t.name}</span>
                   )}
                   {editing !== t.id && (
-                    <button onClick={() => remove(t.id)} aria-label={`Delete ${t.name}`} className="pointer-events-auto text-ink/35 hover:text-ink -mr-1 p-1"><Icon name="close" size={13} /></button>
+                    <button onClick={() => remove(t.id)} aria-label={`Delete ${t.name}`} className="pointer-events-auto text-ink/55 hover:text-ink -mr-1 p-1"><Icon name="close" size={13} /></button>
                   )}
                 </div>
                 {t.cols.map((c, i) => (
@@ -182,7 +182,7 @@ export default function PlayBoard({ onSchema }) {
 
             <button onClick={reset} className="absolute right-3 bottom-3 z-40 btn btn-paper btn-sm">Reset</button>
 
-            <p className="absolute left-4 bottom-3 z-40 hand text-[21px] text-ink/70 pointer-events-none">
+            <p className="absolute left-4 bottom-3 z-40 hand text-[21px] text-ink/80 pointer-events-none">
               {HINT[tool] ?? 'Scribble anything. It is your canvas.'}
               {links.length === 0 && tool === 'select' && <span className="text-tangerine"> Pick the arrow tool and link orders → customers.</span>}
             </p>

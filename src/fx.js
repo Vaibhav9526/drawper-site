@@ -11,22 +11,23 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
 //   data-reveal                                  cards that swing in
 //   data-parallax="0.3"                          drifts against the scroll
 //   data-tilt                                    a window that tips up into place
-//   data-gallery + data-track                    pinned sideways gallery (desktop)
+//   data-sheet (+ data-pop / data-stroke / data-write)  sketches that ink themselves in
 //   data-marquee                                 strip that skews with scroll speed
-//   data-cloud / data-bird / data-leaf           sky decor
+//   data-cloud / data-leaf                       sky decor
 //   data-meadow + data-girl                      the walk at the end
 export function initScroll(root) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
   const q = (s) => [...root.querySelectorAll(s)]
   if (reduce) return () => {}
 
+  const undo = []
   const ctx = gsap.context(() => {
     const page = { trigger: root, start: 'top top', end: 'bottom bottom', scrub: true }
 
     // ---- hero: the picture zooms and sinks, the copy lifts away
     const hero = root.querySelector('[data-hero]')
     if (hero) {
-      gsap.to('[data-hero-art]', { scale: 1.22, yPercent: 7, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
+      gsap.to('[data-hero-art]', { scale: 1.2, yPercent: 7, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
       gsap.to('[data-hero-copy]', { y: -150, opacity: 0, ease: 'none', scrollTrigger: { trigger: hero, start: '15% top', end: '85% top', scrub: true } })
     }
 
@@ -61,20 +62,42 @@ export function initScroll(root) {
         { rotateX: 0, scale: 1, y: 0, ease: 'none', scrollTrigger: { trigger: el, start: 'top 100%', end: 'top 45%', scrub: 0.6 } })
     })
 
-    // ---- the product gallery pins and slides sideways
-    const mm = gsap.matchMedia()
-    mm.add('(min-width: 1024px)', () => {
-      q('[data-gallery]').forEach((g) => {
-        const track = g.querySelector('[data-track]')
-        const dist = () => Math.max(0, track.scrollWidth - window.innerWidth + 80)
-        gsap.to(track, {
-          x: () => -dist(), ease: 'none',
-          scrollTrigger: { trigger: g, pin: true, scrub: 0.7, start: 'top 56px', end: () => `+=${dist() + window.innerHeight * 0.3}`, invalidateOnRefresh: true, anticipatePin: 1 },
-        })
-        g.querySelectorAll('[data-slide]').forEach((s, i) => {
-          gsap.fromTo(s, { rotate: i % 2 ? 3 : -3, y: i % 2 ? 24 : -24 }, { rotate: i % 2 ? -3 : 3, y: i % 2 ? -24 : 24, ease: 'none', scrollTrigger: { trigger: g, scrub: 0.7, start: 'top 56px', end: () => `+=${dist()}`, invalidateOnRefresh: true } })
-        })
+    // ---- each sketch inks itself in as you scroll: boxes pop, arrows draw, notes appear
+    q('[data-sheet]').forEach((sheet) => {
+      const svg = sheet.querySelector('svg')
+      const pops = [...svg.querySelectorAll('[data-pop]')]
+      const notes = [...svg.querySelectorAll('[data-write]')]
+      const strokes = [...svg.querySelectorAll('[data-stroke]')]
+      gsap.set(pops, { opacity: 0, scale: 0.7, transformOrigin: '50% 50%' })
+      gsap.set(notes, { opacity: 0 })
+      const heads = strokes.map((p) => {
+        const len = p.getTotalLength()
+        p.style.strokeDasharray = len
+        p.style.strokeDashoffset = len
+        p.removeAttribute('marker-end')
+        const end = p.getPointAtLength(len)
+        const pre = p.getPointAtLength(Math.max(0, len - 6))
+        const head = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        head.setAttribute('d', 'M-10 -5.500 L0 0 L-10 5.500')
+        head.setAttribute('fill', 'none')
+        head.setAttribute('stroke', p.getAttribute('stroke') || '#0d1b3e')
+        head.setAttribute('stroke-width', p.getAttribute('stroke-width') || '2.4')
+        head.setAttribute('stroke-linecap', 'round')
+        head.setAttribute('stroke-linejoin', 'round')
+        head.setAttribute('transform', `translate(${end.x} ${end.y}) rotate(${(Math.atan2(end.y - pre.y, end.x - pre.x) * 180) / Math.PI})`)
+        head.style.opacity = 0
+        p.after(head)
+        undo.push(() => { head.remove(); p.style.strokeDasharray = ''; p.style.strokeDashoffset = '' })
+        return head
       })
+      const tl = gsap.timeline({ scrollTrigger: { trigger: sheet, start: 'top 80%', once: true } })
+      tl.to(pops, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.12, ease: 'back.out(1.6)' })
+      strokes.forEach((p, i) => {
+        const at = 0.55 + i * 0.16
+        tl.to(p, { strokeDashoffset: 0, duration: 0.55, ease: 'none' }, at)
+        tl.to(heads[i], { opacity: 1, duration: 0.05 }, at + 0.52)
+      })
+      tl.to(notes, { opacity: 1, duration: 0.4, stagger: 0.18 }, 0.9)
     })
 
     // ---- marquee that skews with scroll speed
@@ -97,23 +120,6 @@ export function initScroll(root) {
       gsap.to(c, { y: () => -s * (root.scrollHeight - innerHeight), x: Number(c.dataset.dir) * 160, ease: 'none', scrollTrigger: { ...page, scrub: 0.8, invalidateOnRefresh: true } })
     })
 
-    // ---- birds cross the screen three times over the length of the page
-    const birds = q('[data-bird]')
-    const setters = birds.map((b) => ({ x: gsap.quickSetter(b, 'x', 'px'), y: gsap.quickSetter(b, 'y', 'px'), r: gsap.quickSetter(b, 'rotation', 'deg') }))
-    birds.forEach((b, i) => gsap.to(b, { scaleY: 0.45, duration: 0.22 + (i % 3) * 0.05, yoyo: true, repeat: -1, ease: 'sine.inOut', transformOrigin: '50% 100%' }))
-    ScrollTrigger.create({
-      trigger: root, start: 'top top', end: 'bottom bottom',
-      onUpdate: (self) => {
-        birds.forEach((_, i) => {
-          const p = (self.progress * 3.2 + i * 0.045) % 1
-          const w = innerWidth + 120
-          setters[i].x(p * w - 60)
-          setters[i].y(innerHeight * (0.1 + (i % 4) * 0.045) + Math.sin(p * 9 + i) * 30 + p * 80)
-          setters[i].r(Math.cos(p * 9 + i) * 8)
-        })
-      },
-    })
-
     // ---- a few leaves drift down slowly and sway
     q('[data-leaf]').forEach((l, i) => {
       gsap.set(l, { x: (i / 5) * innerWidth + 60, y: -60 })
@@ -126,15 +132,10 @@ export function initScroll(root) {
     gsap.to('[data-haze]', { opacity: 1, ease: 'none', scrollTrigger: turn })
     gsap.to('[data-leaves]', { filter: 'hue-rotate(-58deg) saturate(1.5)', ease: 'none', scrollTrigger: turn })
 
-    // ---- the footer picture settles into place as it arrives
-    const foot = root.querySelector('[data-foot]')
-    if (foot) {
-      gsap.fromTo('[data-foot-art]', { scale: 1.16, yPercent: 7, transformOrigin: '50% 100%' }, { scale: 1, yPercent: 0, ease: 'none', scrollTrigger: { trigger: foot, start: 'top bottom', end: 'bottom bottom', scrub: true } })
-    }
   }, root)
 
   const refresh = () => ScrollTrigger.refresh()
   window.addEventListener('load', refresh)
   document.fonts?.ready.then(refresh)
-  return () => { window.removeEventListener('load', refresh); ctx.revert() }
+  return () => { window.removeEventListener('load', refresh); ctx.revert(); undo.forEach((fn) => fn()) }
 }

@@ -4,7 +4,7 @@ const TYPE = /\b(?:INTEGER|TEXT|TIMESTAMP|NUMERIC|Int|String|DateTime|Decimal|nu
 const SPLIT = new RegExp(`(${KEY.source}|${TYPE.source}|@\\w+)`, 'g')
 
 function line(src, i) {
-  if (/^\s*(--|\/\/)/.test(src)) return <span key={i} className="text-white/40">{src}{'\n'}</span>
+  if (/^\s*(--|\/\/)/.test(src)) return <span key={i} className="text-white/60">{src}{'\n'}</span>
   const parts = src.split(SPLIT)
   return (
     <span key={i}>
