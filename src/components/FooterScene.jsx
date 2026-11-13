@@ -1,12 +1,16 @@
+import { useCallback, useState } from 'react'
 import AsciiSky, { sceneAspect } from './AsciiSky'
 import Icon from './Icon'
 import useRepoStats from '../github'
 import { CHANGELOG, ISSUES, LICENSE, MARKET, OPEN_VSCODE, REPO } from '../links'
 
-// The end of the day: the same hill and lone tree graded to golden hour and drawn in
-// characters. The top fades into the page's evening colour so there is no hard edge.
-const CROP = [0.33, 0.69]
-const A = sceneAspect(1600, 1600 * (CROP[1] - CROP[0]))
+// The end of the day: a wheat field at golden hour, drawn in characters coloured from the
+// picture. Once drawn, the grain moves in the wind. The top fades into the page's evening
+// colour so there is no hard edge.
+const CROP = [0.06, 0.96]
+const SWAY = { from: 0.5, amp: 2.6 }
+const A = sceneAspect(1800, 1014 * (CROP[1] - CROP[0]))
+const SPAN = CROP[1] - CROP[0]
 
 const cols = [
   ['Product', [['Demo', '#demo'], ['Drawings', '#product'], ['Features', '#features'], ['Get started', '#start']]],
@@ -17,19 +21,22 @@ const headline = 'Sketch it in the morning. Ship it by sunset.'
 
 export default function FooterScene() {
   const { stars, forks, version } = useRepoStats()
+  const [lit, setLit] = useState(false)
+  const light = useCallback(() => setLit(true), [])
 
   return (
-    <footer data-foot className="relative z-[1] bg-[#2a1830]">
-      <div style={{ '--a': A, '--fh': 'max(430px, calc(100vw / var(--a)))' }} className="relative isolate overflow-hidden h-[var(--fh)]">
+    <footer data-foot className="relative z-[1]">
+      <div style={{ '--a': A, '--fh': 'max(460px, calc(100vw / var(--a)))' }} className="relative isolate overflow-hidden h-[var(--fh)]">
         <div className="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent_0,rgb(0_0_0/0.55)_22%,#000_46%)] [-webkit-mask-image:linear-gradient(to_bottom,transparent_0,rgb(0_0_0/0.55)_22%,#000_46%)]">
           <div data-foot-art aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[max(100%,calc(var(--fh)*var(--a)))] [aspect-ratio:var(--a)] overflow-hidden will-change-transform">
-            <AsciiSky src="/footer.jpg" crop={CROP} aspect={A} grade className="absolute inset-0 w-full h-full" />
+            <img src="/footer.jpg" alt="" width="1800" height="1014" loading="lazy" className={`absolute left-0 w-full max-w-none transition-opacity duration-[1600ms] ease-out ${lit ? 'opacity-100' : 'opacity-0'}`} style={{ height: `${100 / SPAN}%`, top: `${-(CROP[0] / SPAN) * 100}%` }} />
+            <AsciiSky src="/footer.jpg" crop={CROP} aspect={A} sway={SWAY} className="absolute inset-0 w-full h-full" onPaint={light} />
           </div>
         </div>
         <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#2a1830] to-transparent" />
 
-          <div className="absolute inset-x-0 top-[24%] px-5 text-center text-white [text-shadow:0_2px_28px_rgb(60_20_60/0.5)]">
-            <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-white/80">Golden hour</p>
+          <div className="absolute inset-x-0 top-[24%] px-5 text-center text-[#3b1a2b] [text-shadow:0_1px_24px_rgb(255_236_190/0.7)]">
+            <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-[#3b1a2b]/70">Golden hour</p>
             <h2 data-words className="mt-3 mx-auto max-w-[640px] text-balance text-[clamp(1.7rem,3.6vw,2.7rem)] font-semibold tracking-[-0.04em] leading-[1.08]">
               {headline.split(' ').map((w, i) => (
                 <span key={i} className="inline-block overflow-hidden align-bottom pb-[0.14em] -mb-[0.14em] mr-[0.24em]"><span data-w className="inline-block">{w}</span></span>

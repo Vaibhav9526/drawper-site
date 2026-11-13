@@ -1,9 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
-// The hero picture rebuilt out of characters. Every cell is coloured from the picture
-// itself (tone on tone: a slightly deeper or lighter shade of the pixel under it), the
-// glyph density follows the picture's light, and a pencil pass of outline strokes is
-// drawn first. The image is read in the browser, so swapping /hero.jpg is all it takes.
+// A picture rebuilt out of characters. Every cell is coloured from the picture itself
+// (tone on tone: a slightly deeper or lighter shade of the pixel under it), the glyph
+// density follows the picture's light, and a pencil pass of outline strokes is drawn
+// first. The image is read in the browser, so swapping the file is all it takes.
+//
+// With `sway`, the lower part of the picture moves in the wind once it is drawn: each
+// cell borrows its glyph and colour from a neighbour a little to the left or right, and
+// the offset rolls like a wave, so grass and grain ripple in characters.
 const COLS = 300
 const CW = 4.85
 const CH = 8.3
@@ -16,51 +20,7 @@ const PAINT_MS = 2200
 // canvas aspect for an image (or a crop of it) of the given pixel size
 export const sceneAspect = (w, h) => (COLS * CW) / (Math.round((COLS * CW) / (w / h) / CH) * CH)
 
-
-// ---- golden hour: turns the daytime picture into evening light ---------------------
-const SKY_STOPS = [[0, [52, 38, 104]], [0.34, [150, 70, 130]], [0.62, [246, 116, 102]], [0.82, [255, 170, 94]], [1, [255, 216, 132]]]
-function skyAt(t) {
-  for (let i = 1; i < SKY_STOPS.length; i++) {
-    if (t <= SKY_STOPS[i][0]) {
-      const [t0, a] = SKY_STOPS[i - 1]
-      const [t1, b] = SKY_STOPS[i]
-      const k = (t - t0) / (t1 - t0)
-      return [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k]
-    }
-  }
-  return SKY_STOPS[SKY_STOPS.length - 1][1]
-}
-// recolours one pixel; fx, fy are its position in the picture (0 to 1), HOR is where the horizon sits
-const HOR = 0.64
-function golden(px, i, fx, fy) {
-  const r = px[i]
-  const g = px[i + 1]
-  const b = px[i + 2]
-  const mx = Math.max(r, g, b)
-  const sat = (mx - Math.min(r, g, b)) / (mx || 1)
-  const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
-  const above = fy < HOR + 0.03
-  const sky = skyAt(Math.min(1, fy / HOR))
-  let o
-  if (above && b > r + 25 && b > g) { const k = 0.9 + 0.2 * lum; o = [sky[0] * k, sky[1] * k, sky[2] * k] }
-  else if (above && sat < 0.38 && lum > 0.6) { const k = 0.84 + 0.2 * lum; o = [(255 * 0.65 + sky[0] * 0.35) * k, (232 * 0.65 + sky[1] * 0.35) * k, (205 * 0.65 + sky[2] * 0.35) * k] }
-  else if (g > b + 8 && g >= r * 0.9) { const dim = 1 - 0.3 * Math.max(0, (fy - HOR) / (1 - HOR)); o = [(r * 1.05 + 36) * dim, (g * 0.86 + 8) * dim, b * 0.42 * dim] }
-  else o = [r * 1.08 + 8, g * 0.9, b * 0.68]
-  // the low sun, just off the tree
-  const dx = fx - 0.7
-  const dy = (fy - HOR + 0.02) * 1.7
-  const glow = Math.exp(-(dx * dx + dy * dy) / 0.02)
-  const core = Math.exp(-(dx * dx + dy * dy) / 0.0016)
-  px[i] = Math.min(255, o[0] + glow * 120 + core * 140)
-  px[i + 1] = Math.min(255, o[1] + glow * 78 + core * 130)
-  px[i + 2] = Math.min(255, o[2] + glow * 28 + core * 90)
-}
-function gradeAll(px, w, h, grade) {
-  if (!grade) return
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) golden(px, (y * w + x) * 4, x / w, y / h)
-}
-
-function read(img, crop, grade) {
+function read(img, crop) {
   const sy = crop[0] * img.naturalHeight
   const sh = (crop[1] - crop[0]) * img.naturalHeight
   const rows = Math.round((COLS * CW) / (img.naturalWidth / sh) / CH)
@@ -76,9 +36,7 @@ function read(img, crop, grade) {
   const hx = half.getContext('2d', { willReadFrequently: true })
   hx.imageSmoothingQuality = 'high'
   hx.drawImage(stage, 0, 0, COLS, rows)
-  const img2 = hx.getImageData(0, 0, COLS, rows)
-  const px = img2.data
-  gradeAll(px, COLS, rows, grade)
+  const px = hx.getImageData(0, 0, COLS, rows).data
   const lum = new Float32Array(COLS * rows)
   for (let i = 0; i < lum.length; i++) lum[i] = (0.2126 * px[i * 4] + 0.7152 * px[i * 4 + 1] + 0.0722 * px[i * 4 + 2]) / 255
 
@@ -109,23 +67,8 @@ function read(img, crop, grade) {
   return { rows, cells }
 }
 
-// the graded picture itself, drawn under the characters
-function paintWash(canvas, img, crop, grade) {
-  const sy = crop[0] * img.naturalHeight
-  const sh = (crop[1] - crop[0]) * img.naturalHeight
-  canvas.width = 1200
-  canvas.height = Math.round(1200 / (img.naturalWidth / sh))
-  const c = canvas.getContext('2d', { willReadFrequently: true })
-  c.drawImage(img, 0, sy, img.naturalWidth, sh, 0, 0, canvas.width, canvas.height)
-  const d = c.getImageData(0, 0, canvas.width, canvas.height)
-  gradeAll(d.data, canvas.width, canvas.height, grade)
-  c.putImageData(d, 0, 0)
-}
-
-export default function AsciiSky({ src, aspect, crop = [0, 1], grade = false, className = '', onPaint }) {
+export default function AsciiSky({ src, aspect, crop = [0, 1], sway = null, className = '', onPaint }) {
   const cv = useRef(null)
-  const wash = useRef(null)
-  const [lit, setLit] = useState(false)
 
   useEffect(() => {
     const c = cv.current
@@ -133,26 +76,31 @@ export default function AsciiSky({ src, aspect, crop = [0, 1], grade = false, cl
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
     let raf = 0
     let dead = false
+    let visible = true
     let ro
+    const io = new IntersectionObserver(([en]) => { visible = en.isIntersecting })
+    io.observe(c)
 
     const img = new Image()
     img.src = src
     img.decode().then(() => {
       if (dead) return
-      const { rows, cells } = read(img, crop, grade)
-      if (grade && wash.current) paintWash(wash.current, img, crop, grade)
+      const { rows, cells } = read(img, crop)
       const LW = COLS * CW
       const LH = rows * CH
       const state = new Uint8Array(cells.length)
+      const from = new Int16Array(cells.length) // which column each cell currently borrows from
+      for (let i = 0; i < from.length; i++) from[i] = i % COLS
       let start = 0
       let painted = false
 
       const put = (i) => {
         const k = cells[i]
         if (!state[i]) return
+        const s = state[i] === 1 ? k : cells[k.y * COLS + from[i]]
         ctx.clearRect(k.x * CW, k.y * CH, CW, CH)
-        ctx.fillStyle = state[i] === 1 ? PENCIL : k.col
-        ctx.fillText(state[i] === 1 ? k.sketch : k.ch, k.x * CW + CW / 2, k.y * CH + CH / 2 + 0.4)
+        ctx.fillStyle = state[i] === 1 ? PENCIL : s.col
+        ctx.fillText(state[i] === 1 ? k.sketch : s.ch, k.x * CW + CW / 2, k.y * CH + CH / 2 + 0.4)
       }
       const fit = () => {
         const s = c.clientWidth / LW
@@ -165,6 +113,27 @@ export default function AsciiSky({ src, aspect, crop = [0, 1], grade = false, cl
         ctx.textBaseline = 'middle'
         for (let i = 0; i < cells.length; i++) put(i)
       }
+
+      // wind: roll a wave of small sideways offsets through the lower part of the picture
+      let last = 0
+      const wind = (now) => {
+        raf = requestAnimationFrame(wind)
+        if (!visible || now - last < 64) return
+        last = now
+        const t = now / 1000
+        const y0 = Math.floor(rows * sway.from)
+        for (let y = y0; y < rows; y++) {
+          const depth = (y - y0) / (rows - y0)
+          const amp = sway.amp * (0.5 + 0.5 * depth)
+          for (let x = 0; x < COLS; x++) {
+            const wave = Math.sin(t * 1.3 + x * 0.042 + y * 0.15) + 0.55 * Math.sin(t * 2.2 - x * 0.1 + y * 0.06)
+            const sx = Math.min(COLS - 1, Math.max(0, Math.round(x + wave * amp)))
+            const i = y * COLS + x
+            if (sx !== from[i]) { from[i] = sx; put(i) }
+          }
+        }
+      }
+
       const frame = (now) => {
         if (!start) start = now
         const t = reduce ? Infinity : now - start
@@ -176,8 +145,9 @@ export default function AsciiSky({ src, aspect, crop = [0, 1], grade = false, cl
           if (want > state[i]) { state[i] = want; put(i) }
           if (state[i] < 2) busy = true
         }
-        if (t >= SKETCH_MS * 0.6 && !painted) { painted = true; setLit(true); onPaint?.() }
+        if (t >= SKETCH_MS * 0.6 && !painted) { painted = true; onPaint?.() }
         if (busy) raf = requestAnimationFrame(frame)
+        else if (sway && !reduce) raf = requestAnimationFrame(wind)
       }
       fit()
       ro = new ResizeObserver(fit)
@@ -185,13 +155,8 @@ export default function AsciiSky({ src, aspect, crop = [0, 1], grade = false, cl
       raf = requestAnimationFrame(frame)
     }).catch(() => onPaint?.())
 
-    return () => { dead = true; cancelAnimationFrame(raf); ro?.disconnect() }
-  }, [src, crop, grade, onPaint])
+    return () => { dead = true; cancelAnimationFrame(raf); ro?.disconnect(); io.disconnect() }
+  }, [src, crop, sway, onPaint])
 
-  return (
-    <>
-      {grade && <canvas ref={wash} aria-hidden="true" className={`${className} transition-opacity duration-[1600ms] ease-out ${lit ? 'opacity-100' : 'opacity-0'}`} />}
-      <canvas ref={cv} className={className} style={{ aspectRatio: `${aspect}` }} role="img" aria-label="A scene drawn in coloured text characters" />
-    </>
-  )
+  return <canvas ref={cv} className={className} style={{ aspectRatio: `${aspect}` }} role="img" aria-label="A scene drawn in coloured text characters" />
 }

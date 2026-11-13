@@ -20,6 +20,7 @@ export function initScroll(root) {
   const q = (s) => [...root.querySelectorAll(s)]
   if (reduce) return () => {}
 
+  let stop = () => {}
   const ctx = gsap.context(() => {
     const page = { trigger: root, start: 'top top', end: 'bottom bottom', scrub: true }
 
@@ -68,6 +69,7 @@ export function initScroll(root) {
         { y: -300, rotate: i % 2 ? 11 : -11, transformOrigin: i % 2 ? '100% 100%' : '0% 100%' },
         { y: 0, rotate: i % 2 ? 0.8 : -0.8, ease: 'power2.in', scrollTrigger: { trigger: e, start: 'top 98%', end: 'top 38%', scrub: 0.5 } })
       gsap.fromTo(board, { opacity: 0 }, { opacity: 1, ease: 'none', scrollTrigger: { trigger: e, start: 'top 98%', end: 'top 72%', scrub: true } })
+      gsap.fromTo(e, { y: 0, opacity: 1, scale: 1 }, { y: 140, opacity: 0, scale: 0.94, ease: 'power1.in', immediateRender: false, scrollTrigger: { trigger: e, start: 'bottom 58%', end: 'bottom 12%', scrub: true } })
       gsap.fromTo(e.querySelector('[data-legs]'), { scaleY: 0.92, transformOrigin: '50% 0%' }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: e, start: 'top 60%', end: 'top 36%', scrub: true } })
     })
 
@@ -91,22 +93,44 @@ export function initScroll(root) {
       gsap.to(c, { y: () => -s * (root.scrollHeight - innerHeight), x: Number(c.dataset.dir) * 160, ease: 'none', scrollTrigger: { ...page, scrub: 0.8, invalidateOnRefresh: true } })
     })
 
-    // ---- birds cross the screen three times over the length of the page
+    // ---- a flock flies across in a loose V: flap bursts with glides, banking with the path
     const birds = q('[data-bird]')
-    const setters = birds.map((b) => ({ x: gsap.quickSetter(b, 'x', 'px'), y: gsap.quickSetter(b, 'y', 'px'), r: gsap.quickSetter(b, 'rotation', 'deg') }))
-    birds.forEach((b, i) => gsap.to(b, { scaleY: 0.45, duration: 0.22 + (i % 3) * 0.05, yoyo: true, repeat: -1, ease: 'sine.inOut', transformOrigin: '50% 100%' }))
-    ScrollTrigger.create({
-      trigger: root, start: 'top top', end: 'bottom bottom',
-      onUpdate: (self) => {
-        birds.forEach((_, i) => {
-          const p = (self.progress * 3.2 + i * 0.045) % 1
-          const w = innerWidth + 120
-          setters[i].x(p * w - 60)
-          setters[i].y(innerHeight * (0.1 + (i % 4) * 0.045) + Math.sin(p * 9 + i) * 30 + p * 80)
-          setters[i].r(Math.cos(p * 9 + i) * 8)
-        })
-      },
+    birds.forEach((b, i) => {
+      const wl = b.querySelector('[data-wl]')
+      const wr = b.querySelector('[data-wr]')
+      gsap.set(wl, { svgOrigin: '30 18' })
+      gsap.set(wr, { svgOrigin: '34 18' })
+      const beat = gsap.timeline({ repeat: -1, delay: i * 0.17 })
+      const up = 0.17 + (i % 3) * 0.02
+      for (let n = 0; n < 4; n++) {
+        beat.to(wl, { rotation: -38, duration: up, ease: 'sine.out' }, '>').to(wr, { rotation: 38, duration: up, ease: 'sine.out' }, '<')
+        beat.to(wl, { rotation: 16, duration: up * 1.15, ease: 'sine.inOut' }, '>').to(wr, { rotation: -16, duration: up * 1.15, ease: 'sine.inOut' }, '<')
+      }
+      beat.to(wl, { rotation: -6, duration: 0.5, ease: 'sine.inOut' }, '>').to(wr, { rotation: 6, duration: 0.5, ease: 'sine.inOut' }, '<')
+      beat.to({}, { duration: 0.9 + (i % 3) * 0.25 })
     })
+    const flight = { scroll: 0 }
+    ScrollTrigger.create({ trigger: root, start: 'top top', end: 'bottom bottom', onUpdate: (self) => { flight.scroll = self.progress } })
+    const place = birds.map((b) => ({ x: gsap.quickSetter(b, 'x', 'px'), y: gsap.quickSetter(b, 'y', 'px'), r: gsap.quickSetter(b, 'rotation', 'deg') }))
+    const fly = () => {
+      const t = gsap.ticker.time
+      const w = innerWidth + 260
+      // the flock drifts on its own and is pushed along when you scroll
+      const lead = (t * 0.018 + flight.scroll * 2.6) % 1
+      const path = (p) => innerHeight * 0.2 + Math.sin(p * 6.2) * innerHeight * 0.07 + p * innerHeight * 0.12
+      birds.forEach((_, i) => {
+        const rank = Math.ceil(i / 2)
+        const side = i % 2 ? 1 : -1
+        const p = (lead - rank * 0.014 + 1) % 1
+        const x = p * w - 130
+        const bob = Math.sin(t * 1.6 + i * 1.7) * 7
+        place[i].x(x)
+        place[i].y(path(p) + side * rank * 15 + bob)
+        place[i].r(Math.cos(p * 6.2) * 7 + Math.sin(t * 1.6 + i * 1.7) * 3)
+      })
+    }
+    gsap.ticker.add(fly)
+    stop = () => gsap.ticker.remove(fly)
 
     // ---- a few leaves drift down slowly and sway
     q('[data-leaf]').forEach((l, i) => {
@@ -130,5 +154,5 @@ export function initScroll(root) {
   const refresh = () => ScrollTrigger.refresh()
   window.addEventListener('load', refresh)
   document.fonts?.ready.then(refresh)
-  return () => { window.removeEventListener('load', refresh); ctx.revert() }
+  return () => { window.removeEventListener('load', refresh); stop(); ctx.revert() }
 }
