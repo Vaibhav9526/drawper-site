@@ -23,21 +23,21 @@ export default function Hero() {
 
       <div data-hero-copy className="relative z-20 flex-1 flex items-center justify-center px-4 pt-14">
         <div className="text-center max-w-[780px]">
-          <p className="rise inline-flex items-center gap-2 h-8 px-3.5 rounded-full border border-white/70 bg-white/70 backdrop-blur-md text-[12.5px] text-ink/75">
+          <p className="rise inline-flex items-center gap-2 h-8 px-3.5 rounded-full border border-white/70 bg-white/70 backdrop-blur-md text-[12.5px] text-ink/86">
             <span className="size-1.5 rounded-full bg-[#28c840]" aria-hidden="true" /> Live on the VS Code Marketplace
           </p>
           <h1 className="rise mt-6 text-[clamp(2.6rem,6.2vw,5rem)] font-semibold tracking-[-0.05em] leading-[1.02] [animation-delay:80ms]">
             Sketch your system.<br />Ship the <span className="text-brand">schema.</span>
           </h1>
-          <p className="rise mt-5 mx-auto max-w-[540px] text-[18px] leading-relaxed text-ink/75 text-balance [animation-delay:160ms]">
+          <p className="rise mt-5 mx-auto max-w-[540px] text-[18px] leading-relaxed text-ink/86 text-balance [animation-delay:160ms]">
             Draw the boxes, drag an arrow, and Drawper writes the SQL. Let your DB engineer enjoy their holiday.
           </p>
           <div className="rise mt-8 flex flex-wrap items-center justify-center gap-3 [animation-delay:240ms]">
             <a href={OPEN_VSCODE} className="btn btn-brand h-12 px-6 text-[15px]">Add to VS Code</a>
             <a href="#demo" className="btn btn-paper h-12 px-6 text-[15px]"><Icon name="play" size={13} /> Watch it work</a>
           </div>
-          <p className="rise mt-4 text-[12.5px] text-ink/60 [animation-delay:300ms]">
-            Opens straight in VS Code. No VS Code here? <a href={MARKET} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-ink">View on the Marketplace</a>
+          <p className="rise mt-5 inline-block px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-white/80 text-[13px] text-ink/85 shadow-[0_6px_18px_-10px_rgb(13_27_62/0.4)] [animation-delay:300ms]">
+            Opens straight in VS Code. No VS Code here? <a href={MARKET} target="_blank" rel="noreferrer" className="font-medium text-brand underline underline-offset-2 hover:text-ink">View on the Marketplace</a>
           </p>
         </div>
       </div>

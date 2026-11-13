@@ -167,7 +167,7 @@ export default function Demo() {
       <div className="max-w-[640px]">
         <p className="mono-label">See it work</p>
         <Words as="h2" className="mt-2 text-[clamp(1.9rem,4vw,2.8rem)] font-semibold tracking-[-0.035em] leading-[1.05]">Watch a drawing become a database.</Words>
-        <p className="mt-3 text-[16px] leading-relaxed text-ink/70">No sound, no sign-up. It plays on its own: tables go in, an arrow links them, the schema writes itself.</p>
+        <p className="mt-3 text-[16px] leading-relaxed text-ink/80">No sound, no sign-up. It plays on its own: tables go in, an arrow links them, the schema writes itself.</p>
       </div>
 
       <div data-tilt className="mt-7 rounded-[18px] overflow-hidden bg-white/80 backdrop-blur-md border border-white/80 shadow-[0_40px_80px_-40px_rgb(13_27_62/0.55)]">
@@ -206,9 +206,9 @@ export default function Demo() {
           <div className={`bg-night md:min-h-[340px] flex-col ${trying ? 'hidden' : 'flex'}`}>
             <div className="flex items-center gap-1 h-10 px-3 border-b border-white/10 font-mono text-[11.5px]">
               {['SQL', 'Prisma'].map((n) => (
-                <span key={n} data-tab={n} data-on={n === 'SQL'} className="px-2.5 py-1 rounded-md text-white/45 data-[on=true]:bg-white/12 data-[on=true]:text-white">{n}</span>
+                <span key={n} data-tab={n} data-on={n === 'SQL'} className="px-2.5 py-1 rounded-md text-white/64 data-[on=true]:bg-white/12 data-[on=true]:text-white">{n}</span>
               ))}
-              <span data-file className="ml-auto text-white/35">schema.sql</span>
+              <span data-file className="ml-auto text-white/58">schema.sql</span>
             </div>
             <div className="flex-1 min-h-[220px] max-h-[330px] overflow-auto code-scroll p-4">
               <pre data-code className="font-mono text-[12px] leading-[1.65] text-[#e7e6ec] whitespace-pre" />
@@ -218,12 +218,12 @@ export default function Demo() {
             <div className={`bg-night md:min-h-[340px] flex-col ${trying ? 'flex' : 'hidden'}`}>
               <div className="flex items-center gap-1 h-10 px-3 border-b border-white/10 font-mono text-[11.5px]">
                 {Object.keys(FORMATS).map((n) => (
-                  <button key={n} onClick={() => setFmt(n)} aria-pressed={fmt === n} className={`px-2.5 py-1 rounded-md transition-colors ${fmt === n ? 'bg-white/12 text-white' : 'text-white/45 hover:text-white/80'}`}>{n}</button>
+                  <button key={n} onClick={() => setFmt(n)} aria-pressed={fmt === n} className={`px-2.5 py-1 rounded-md transition-colors ${fmt === n ? 'bg-white/12 text-white' : 'text-white/64 hover:text-white/92'}`}>{n}</button>
                 ))}
-                <button onClick={copyCode} aria-label="Copy code" className="ml-auto grid place-items-center size-7 rounded-md text-white/50 hover:text-white hover:bg-white/8"><Icon name={copied ? 'check' : 'copy'} size={13} /></button>
+                <button onClick={copyCode} aria-label="Copy code" className="ml-auto grid place-items-center size-7 rounded-md text-white/68 hover:text-white hover:bg-white/8"><Icon name={copied ? 'check' : 'copy'} size={13} /></button>
               </div>
               <CodeBlock code={FORMATS[fmt](schema.tables, schema.links)} className="flex-1 min-h-[220px] max-h-[420px] p-4" />
-              <p className="px-4 py-2 border-t border-white/10 font-mono text-[11px] text-white/40">Live: {schema.tables.length} tables · {schema.links.length} arrows</p>
+              <p className="px-4 py-2 border-t border-white/10 font-mono text-[11px] text-white/60">Live: {schema.tables.length} tables · {schema.links.length} arrows</p>
             </div>
           )}
         </div>

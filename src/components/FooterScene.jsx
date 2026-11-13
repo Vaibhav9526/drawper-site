@@ -34,7 +34,7 @@ export default function FooterScene() {
     <footer data-foot className="relative z-[1] overflow-hidden" style={{ background: 'linear-gradient(to bottom, #f3978c 0, #ef8e8d 16%, #dd7a90 34%, #b8628f 54%, #7a4887 74%, #3b2456 100%)' }}>
       <div className="relative h-[560px] sm:h-[600px]">
         <div className="relative z-10 px-5 pt-24 text-center text-[#3b1a2b]">
-          <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-[#3b1a2b]/65">Golden hour</p>
+          <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-[#3b1a2b]/88">Golden hour</p>
           <h2 data-words className="mt-3 mx-auto max-w-[640px] text-balance text-[clamp(1.8rem,3.8vw,2.9rem)] font-semibold tracking-[-0.04em] leading-[1.08]">
             {headline.split(' ').map((w, i) => (
               <span key={i} className="inline-block overflow-hidden align-bottom pb-[0.14em] -mb-[0.14em] mr-[0.24em]"><span data-w className="inline-block">{w}</span></span>
@@ -58,7 +58,7 @@ export default function FooterScene() {
         </svg>
       </div>
 
-      <div className="relative -mt-6 bg-[#3b2456] text-white/80">
+      <div className="relative -mt-6 bg-[#3b2456] text-white/92">
         <div className="mx-auto max-w-[1120px] px-6 pt-14 pb-8">
           <div className="grid grid-cols-2 md:grid-cols-[1.5fr_1fr_1fr] gap-x-8 gap-y-10">
             <div className="col-span-2 md:col-span-1">
@@ -66,17 +66,17 @@ export default function FooterScene() {
                 <img src="/logo.svg" width="32" height="32" alt="" className="rounded-[9px]" />
                 <span className="text-[21px] font-semibold tracking-[-0.03em]">Drawper</span>
               </a>
-              <p className="mt-4 max-w-[320px] text-[15px] leading-[1.6] text-white/60 text-pretty">A whiteboard canvas inside VS Code. Draw your architecture and database tables, and get real code out.</p>
+              <p className="mt-4 max-w-[320px] text-[15px] leading-[1.6] text-white/80 text-pretty">A whiteboard canvas inside VS Code. Draw your architecture and database tables, and get real code out.</p>
               <div className="mt-5 flex flex-wrap gap-2 text-[13px]">
-                <a href={REPO} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] transition-colors"><Icon name="star" size={14} /> <b className="font-semibold tabular-nums">{stars}</b> <span className="text-white/60">{stars === 1 ? 'star' : 'stars'}</span></a>
-                <a href={`${REPO}/fork`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] transition-colors"><Icon name="fork" size={14} /> <b className="font-semibold tabular-nums">{forks}</b> <span className="text-white/60">{forks === 1 ? 'fork' : 'forks'}</span></a>
-                <span className="inline-flex items-center h-9 px-3.5 rounded-full bg-white/[0.08] font-mono text-[12px] text-white/70">v{version}</span>
+                <a href={REPO} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] transition-colors"><Icon name="star" size={14} /> <b className="font-semibold tabular-nums">{stars}</b> <span className="text-white/80">{stars === 1 ? 'star' : 'stars'}</span></a>
+                <a href={`${REPO}/fork`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-white/[0.08] hover:bg-white/[0.14] transition-colors"><Icon name="fork" size={14} /> <b className="font-semibold tabular-nums">{forks}</b> <span className="text-white/80">{forks === 1 ? 'fork' : 'forks'}</span></a>
+                <span className="inline-flex items-center h-9 px-3.5 rounded-full bg-white/[0.08] font-mono text-[12px] text-white/86">v{version}</span>
               </div>
             </div>
             {cols.map(([title, links]) => (
               <nav key={title} aria-label={title}>
                 <h3 className="text-[13px] font-semibold text-white">{title}</h3>
-                <ul className="mt-4 space-y-3 text-[15px] text-white/60">
+                <ul className="mt-4 space-y-3 text-[15px] text-white/80">
                   {links.map(([t, href]) => (
                     <li key={t}><a href={href} {...(href.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {})} className="hover:text-white transition-colors">{t}</a></li>
                   ))}
@@ -84,7 +84,7 @@ export default function FooterScene() {
               </nav>
             ))}
           </div>
-          <div className="mt-12 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-[13px] text-white/45">
+          <div className="mt-12 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-[13px] text-white/64">
             <span>© 2026 Drawper. MIT licensed.</span>
             <span>Made for people who draw before they type.</span>
           </div>
