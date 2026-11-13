@@ -1,174 +1,109 @@
-import { useLayoutEffect, useRef, useState } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useLayoutEffect, useRef } from 'react'
+import Hero from './components/Hero'
+import Demo from './components/Demo'
+import Icon from './components/Icon'
+import Words from './components/Words'
+import { Clouds, Defs, Flock, Haze, Leaves } from './components/Decor'
+import FooterScene from './components/FooterScene'
+import { ArchitectureDrawing, Glyph, RelationsDrawing, ViewerDrawing } from './components/Drawings'
 import useSmoothScroll from './smooth'
-import Scene from './components/Scene'
-import DrawCanvas from './components/DrawCanvas'
-import { Phosphor, Hub, Relay, Terminal, Loupe, Rebuild, Riffle, Branches } from '@lucasmarkes/hairline/react'
-import Icon from './components/Icons'
-import { SketchDefs, ForeignKeySketch, ToasterSketch, UnzipSketch } from './components/Illustrations'
-
-gsap.registerPlugin(ScrollTrigger)
-
-const REPO = 'https://github.com/Vaibhav9526/Drawper'
-const CMD = 'code --install-extension drawper-0.0.1.vsix'
+import useRepoStats from './github'
+import { MARKET, REPO } from './links'
+import { initScroll } from './fx'
 
 const sources = ['Prisma', 'SQL', 'Drizzle', 'TypeORM', 'SQLAlchemy', 'Django', 'Mongoose']
 
 const shots = [
-  { img: '/schema-editor.png', alt: 'Drawper schema editor with a table, its columns and the SQL, Prisma, Drizzle and TS generate buttons', k: 'Schema editor', d: 'Tables, columns, PK / NULL / UQ / FK.' },
-  { img: '/relations.png', alt: 'Drawper canvas with an arrow from the orders table to the customers table that adds a foreign key', k: 'Relations', d: 'Arrow between tables adds the FK column.' },
-  { img: '/schema-viewer.png', alt: 'Drawper schema viewer showing an ER diagram of users, posts, comments and tags with foreign keys', k: 'Schema viewer', d: 'ER diagram for any schema file.' },
-]
-
-const how = [
-  { Sketch: ForeignKeySketch, t: 'Arrow in, foreign key out', d: 'Draw from one table to another. The FK column is added and flows into every generator.' },
-  { Sketch: ToasterSketch, t: 'One drawing, every format', d: 'SQL, Prisma, Drizzle, TS types, relation queries and docker-compose.' },
-  { Sketch: UnzipSketch, t: 'Unzip the code you have', d: 'Open any schema file and get an ER diagram, followed across imports.' },
+  { Art: ArchitectureDrawing, k: 'Architecture canvas', d: 'Drop clients, APIs, workers, queues and databases. Arrows become dependencies, then a docker-compose.yml.' },
+  { Art: RelationsDrawing, k: 'Relations by arrow', d: 'Draw an arrow from one table to another and the foreign key column is added for you.' },
+  { Art: ViewerDrawing, k: 'Schema viewer', d: 'Open any schema file and see an ER diagram, followed across imports.' },
 ]
 
 const features = [
-  [Phosphor, 'Opens fast', '~750 KB code-split webview.'],
-  [Hub, 'Architecture panel', 'Client, API, worker, gateway, DB, cache, queue, storage.'],
-  [Relay, 'Relation queries', 'SQL joins plus Drizzle and Prisma queries, both ways.'],
-  [Terminal, 'Convert in the IDE', 'CodeLens, context menu or Command Palette.'],
-  [Loupe, 'Whole app view', 'Every schema in the workspace on one canvas.'],
-  [Rebuild, 'Renames cascade', 'Rename a table or column, every FK follows.'],
-  [Riffle, 'Icons and SVG', 'Icon library, SVG import, paste SVG markup.'],
-  [Branches, 'Plain .dpr JSON', 'Diffs cleanly, lives in git.'],
+  ['Opens fast', 'About 750 KB up front. It only activates when you use it.', 'pill'],
+  ['Architecture panel', 'Client, API, worker, gateway, DB, cache, queue, storage. Arrows become dependencies.', 'box'],
+  ['Relations by arrow', 'Join two tables and the foreign key is created, then flows into every generator.', 'bolt'],
+  ['Code generation', 'SQL, Prisma, Drizzle with relations(), TS types and docker-compose with a Node scaffold per service.', 'braces'],
+  ['Relation queries', 'One click writes SQL joins plus Drizzle and Prisma queries for every relation.', 'card'],
+  ['Convert in the IDE', 'CodeLens, context menu or Command Palette. No canvas needed.', 'pill'],
+  ['Schema viewer', 'Follows foreign keys across files. A Whole app toggle shows every schema.', 'box'],
+  ['Draw on your code', 'Pens, arrows and notes on top of a live copy of your source file.', 'bolt'],
+  ['Five panel themes', 'Blue, Yellow, Mint, Coral or Violet. Drawings stay plain .dpr JSON in git.', 'braces'],
 ]
 
 const steps = [
-  ['Install', CMD],
-  ['New drawing', 'Drawper: New Drawing'],
-  ['Draw', 'Add components, join with Arrow (A)'],
+  ['Install', 'Add Drawper from the VS Code Marketplace'],
+  ['New drawing', 'Run Drawper: New Drawing'],
+  ['Draw', 'Add components, join with the Arrow tool (A)'],
   ['Generate', 'SQL · Prisma · Drizzle · TS · compose'],
 ]
 
+const H2 = 'text-[clamp(1.9rem,4vw,2.8rem)] font-semibold tracking-[-0.035em] leading-[1.05]'
+
 function Nav() {
+  const { stars, forks, version } = useRepoStats()
+  const pill = 'hidden md:inline-flex items-center h-8 rounded-full border border-white/70 bg-white/55 backdrop-blur-md text-[12.5px] text-ink/80 hover:bg-white/80 transition-colors overflow-hidden'
   return (
-    <header className="sticky top-0 z-50 bg-bg/85 backdrop-blur-md border-b border-line">
-      <div className="mx-auto max-w-[1120px] h-12 px-4 flex items-center justify-between">
-        <a href="#top" className="flex items-center gap-2 font-semibold tracking-tight text-[14.5px]">
-          <img src="/logo.svg" width="24" height="24" alt="" className="rounded-[6px]" /> Drawper
+    <header className="sticky top-0 z-50 h-14 bg-white/25 backdrop-blur-xl backdrop-saturate-150 border-b border-white/50 shadow-[0_1px_0_rgb(13_27_62/0.05)]">
+      <div className="mx-auto max-w-[1120px] h-14 px-4 flex items-center justify-between gap-4">
+        <a href="#top" className="flex items-center gap-2 font-semibold tracking-tight text-[15px]">
+          <img src="/logo.svg" width="28" height="28" alt="" className="rounded-[8px]" /> <span className="font-display text-[19px] font-semibold tracking-[-0.03em]">Drawper</span>
         </a>
-        <nav aria-label="Primary" className="hidden sm:flex items-center gap-5 text-[13px] text-mute">
-          <a href="#product" className="hover:text-text transition-colors">Product</a>
-          <a href="#how" className="hover:text-text transition-colors">How it works</a>
-          <a href="#features" className="hover:text-text transition-colors">Features</a>
-          <a href="#start" className="hover:text-text transition-colors">Start</a>
+        <nav aria-label="Primary" className="hidden lg:flex items-center gap-6 text-[13.5px] text-ink/70">
+          <a href="#demo" className="hover:text-ink transition-colors">Demo</a>
+          <a href="#product" className="hover:text-ink transition-colors">Drawings</a>
+          <a href="#features" className="hover:text-ink transition-colors">Features</a>
+          <a href="#start" className="hover:text-ink transition-colors">Start</a>
         </nav>
-        <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-brand">
-          GitHub <Icon name="arrow" size={13} />
-        </a>
+        <div className="flex items-center gap-2">
+          <a href={REPO} target="_blank" rel="noreferrer" className={pill} aria-label={`Star Drawper on GitHub, ${stars} stars`}>
+            <span className="inline-flex items-center gap-1.5 px-3"><Icon name="star" size={13} /> Star</span>
+            <span className="px-2.5 h-full grid place-items-center border-l border-white/70 bg-white/55 font-medium tabular-nums">{stars}</span>
+          </a>
+          <a href={`${REPO}/fork`} target="_blank" rel="noreferrer" className={pill} aria-label={`Fork Drawper, ${forks} forks`}>
+            <span className="inline-flex items-center gap-1.5 px-3"><Icon name="fork" size={13} /> Fork</span>
+            <span className="px-2.5 h-full grid place-items-center border-l border-white/70 bg-white/55 font-medium tabular-nums">{forks}</span>
+          </a>
+          <span className="hidden xl:inline-flex items-center h-8 px-3 rounded-full border border-white/70 bg-white/55 backdrop-blur-md font-mono text-[12px] text-ink/70">v{version}</span>
+          <a href={MARKET} target="_blank" rel="noreferrer" className="btn btn-brand btn-sm">Install</a>
+        </div>
       </div>
     </header>
   )
 }
 
-function CopyCmd({ cmd = CMD, className = '' }) {
-  const [copied, setCopied] = useState(false)
-  const copy = async () => {
-    try { await navigator.clipboard.writeText(cmd); setCopied(true); setTimeout(() => setCopied(false), 1400) } catch { /* noop */ }
-  }
-  return (
-    <button onClick={copy} className={`flex items-center justify-between gap-3 w-full text-left font-mono text-[12px] card px-3 h-9 hover:border-white/25 transition-colors ${className}`}>
-      <span className="truncate"><span className="text-mute">$</span> {cmd}</span>
-      <Icon name={copied ? 'check' : 'copy'} size={14} className="shrink-0 text-mute" />
-    </button>
-  )
-}
-
-function Hero() {
-  return (
-    <section id="top" className="mx-auto max-w-[1120px] px-4 pt-10 sm:pt-14 pb-8 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_500px] gap-8 lg:gap-12 items-center">
-      <div>
-        <p className="mono-label hero-in mb-3">Drawper · VS Code extension</p>
-        <h1 className="hero-in text-[clamp(2.3rem,5.4vw,3.9rem)] font-semibold tracking-[-0.04em] leading-[1.02]">
-          Sketch the system.<br />Ship the <span className="text-brand-hi">schema.</span>
-        </h1>
-        <p className="hero-in mt-4 max-w-[460px] text-[15px] leading-relaxed text-mute">
-          A fast whiteboard canvas inside VS Code. Draw architecture and database tables, get real code out.
-        </p>
-        <p className="hero-in mt-4 text-[13px]">
-          <b className="font-semibold">7</b> <span className="text-mute">schema formats</span>
-          <span className="text-mute/50 mx-2">•</span>
-          <b className="font-semibold">6</b> <span className="text-mute">outputs</span>
-          <span className="text-mute/50 mx-2">•</span>
-          <b className="font-semibold">.dpr</b> <span className="text-mute">plain JSON</span>
-        </p>
-        <div className="hero-in mt-5 max-w-[460px]"><CopyCmd /></div>
-        <div className="hero-in mt-3 flex gap-2">
-          <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-brand">Get Drawper</a>
-          <a href="#product" className="btn btn-ghost">See the canvas</a>
-        </div>
-      </div>
-      <div className="hero-in"><DrawCanvas /></div>
-    </section>
-  )
-}
-
 function Reads() {
   return (
-    <section className="mx-auto max-w-[1120px] px-4 pb-10 flex items-center gap-2 overflow-x-auto [scrollbar-width:none]">
-      <span className="mono-label shrink-0 mr-1">Reads</span>
-      {sources.map((s) => <span key={s} className="chip">{s}</span>)}
+    <section aria-label="Schema sources it reads" className="relative z-10 overflow-hidden py-5 -mt-1">
+      <div data-marquee className="flex w-max items-center gap-2.5 will-change-transform">
+        {[...sources, ...sources, ...sources, ...sources].map((s, i) => (
+          <span key={i} className="shrink-0 text-[14px] font-medium px-5 py-2 rounded-full border border-white/80 bg-white/70 backdrop-blur-md text-ink/75">{s}</span>
+        ))}
+      </div>
     </section>
   )
 }
 
 function Product() {
   return (
-    <section id="product" className="mx-auto max-w-[1120px] px-4 pb-12">
-      <div className="flex items-end justify-between mb-3">
-        <h2 className="text-[19px] font-semibold tracking-tight">The canvas</h2>
-        <span className="mono-label">Real screenshots</span>
+    <section id="product" data-gallery className="relative z-10 lg:min-h-[calc(100svh-56px)] flex flex-col justify-center py-20 lg:py-10">
+      <div className="mx-auto w-full max-w-[1120px] px-4">
+        <p className="mono-label">Drawn, not screenshotted</p>
+        <Words as="h2" className={`mt-2 ${H2}`}>Draw it. Link it. Ship it.</Words>
+        <p className="mt-3 max-w-[560px] text-[16px] leading-relaxed text-ink/70">Sketches of what you get inside VS Code: the canvas, the arrow, the viewer.</p>
       </div>
-      <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-3 gap-3">
-        <figure className="card overflow-hidden relative min-h-[240px] md:min-h-0 reveal">
-          <Scene />
-          <figcaption className="absolute left-3 top-2.5 mono-label">Architecture · isometric</figcaption>
-        </figure>
-        <figure className="card overflow-hidden md:col-span-2 reveal">
-          <img src="/architecture.png" alt="Drawper architecture canvas: web-app, gateway, orders-api, database, cache, worker and queue connected by arrows" width="1500" height="800" className="w-full h-auto block" loading="lazy" decoding="async" />
-          <figcaption className="flex items-center justify-between px-3 py-2 border-t border-line">
-            <span className="text-[13px] font-medium">Architecture</span>
-            <span className="mono-label">arrows → docker-compose</span>
-          </figcaption>
-        </figure>
-        {shots.map((s) => (
-          <figure key={s.k} className="card overflow-hidden reveal">
-            <img src={s.img} alt={s.alt} width="1500" height="800" className="w-full block aspect-[16/9] object-cover object-left-top" loading="lazy" decoding="async" />
-            <figcaption className="px-3 py-2 border-t border-line">
-              <span className="text-[13px] font-medium">{s.k}</span>
-              <span className="block text-[12px] text-mute">{s.d}</span>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function How() {
-  return (
-    <section id="how" className="mx-auto max-w-[1120px] px-4 pb-12">
-      <div className="flex items-end justify-between mb-3">
-        <h2 className="text-[19px] font-semibold tracking-tight">How it works</h2>
-        <span className="mono-label">3 sketches</span>
-      </div>
-      <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-3 gap-3">
-        {how.map(({ Sketch, t, d }, i) => (
-          <article key={t} className="card reveal px-4 pt-4 pb-4 flex flex-col">
-            <div className="flex items-center justify-between mono-label">
-              <span>Step 0{i + 1}</span><span>of 03</span>
-            </div>
-            <div className="my-3"><Sketch /></div>
-            <div className="border-t border-line mb-3" />
-            <h3 className="text-[14.5px] font-medium">{t}</h3>
-            <p className="mt-1 text-[12.5px] text-mute leading-relaxed">{d}</p>
-          </article>
-        ))}
+      <div className="mt-8 overflow-hidden lg:overflow-visible">
+        <div data-track className="flex flex-col lg:flex-row gap-6 px-4 lg:pl-[max(1rem,calc((100vw-1120px)/2+1rem))] lg:pr-10 lg:w-max will-change-transform">
+          {shots.map((s) => (
+            <figure key={s.k} data-slide className="card overflow-hidden lg:w-[min(78vw,880px)] shrink-0 shadow-[0_40px_70px_-45px_rgb(13_27_62/0.5)]">
+              <s.Art />
+              <figcaption className="px-5 py-4 border-t border-line flex flex-wrap items-baseline gap-x-3">
+                <span className="font-display text-[18px] font-semibold tracking-[-0.02em]">{s.k}</span>
+                <span className="text-[14px] text-ink/65">{s.d}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -176,14 +111,16 @@ function How() {
 
 function Features() {
   return (
-    <section id="features" className="mx-auto max-w-[1120px] px-4 pb-12">
-      <h2 className="text-[19px] font-semibold tracking-tight mb-3">Features</h2>
-      <div className="figures grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {features.map(([Fig, t, d]) => (
-          <div key={t} className="card px-3.5 pt-3 pb-3.5 reveal">
-            <Fig intensity={0.6} label={t} theme="dark" className="w-full max-w-[150px] mx-auto" />
-            <h3 className="mt-2.5 text-[13.5px] font-medium">{t}</h3>
-            <p className="mt-0.5 text-[12.5px] text-mute leading-snug">{d}</p>
+    <section id="features" className="relative z-10 mx-auto max-w-[1120px] px-4 pt-24">
+      <Words as="h2" className={H2}>Everything on the canvas, and then some.</Words>
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {features.map(([t, d, g], i) => (
+          <div key={t} data-parallax={i % 3 === 1 ? 0.45 : i % 3 === 2 ? 0.22 : 0}>
+            <div data-reveal className="card p-5 h-full hover:-translate-y-1 hover:shadow-[0_22px_34px_-24px_rgb(13_27_62/0.55)] transition-[transform,box-shadow]">
+              <Glyph kind={g} />
+              <h3 className="mt-4 text-[18px] font-semibold tracking-[-0.02em]">{t}</h3>
+              <p className="mt-1.5 text-[14px] leading-relaxed text-ink/65">{d}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -193,67 +130,52 @@ function Features() {
 
 function Start() {
   return (
-    <section id="start" className="mx-auto max-w-[1120px] px-4 pb-12">
-      <h2 className="text-[19px] font-semibold tracking-tight mb-3">Start</h2>
-      <ol className="grid grid-cols-[minmax(0,1fr)] sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        {steps.map(([t, d], i) => (
-          <li key={t} className="card px-3.5 py-3 reveal">
-            <div className="mono-label">0{i + 1}</div>
-            <h3 className="mt-1 text-[13.5px] font-medium">{t}</h3>
-            <p className="mt-0.5 font-mono text-[11.5px] text-mute break-words">{d}</p>
-          </li>
-        ))}
-      </ol>
-    </section>
-  )
-}
-
-function Footer() {
-  return (
-    <footer className="border-t border-line">
-      <div className="mx-auto max-w-[1120px] px-4 h-12 flex items-center justify-between text-[12.5px] text-mute">
-        <span className="flex items-center gap-2 text-text"><img src="/logo.svg" width="20" height="20" alt="" className="rounded-[5px]" /> Drawper</span>
-        <span className="flex gap-4">
-          <a href={REPO} target="_blank" rel="noreferrer" className="hover:text-text transition-colors">GitHub</a>
-        </span>
+    <section id="start" className="relative z-10 mx-auto max-w-[1120px] px-4 pt-24 pb-10">
+      <div data-reveal className="card p-6 sm:p-10 relative overflow-hidden">
+        <div aria-hidden="true" className="absolute -right-24 -top-24 size-72 rounded-full bg-sun/40 blur-3xl" />
+        <Words as="h2" className={`relative ${H2}`}>Start sketching.</Words>
+        <p className="relative mt-3 max-w-[480px] text-[16px] text-ink/70">Add the extension from the Marketplace, open a drawing, and the first schema is a few boxes away.</p>
+        <ol className="relative mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {steps.map(([t, d], i) => (
+            <li key={t} className="rounded-xl bg-white/70 px-4 py-3.5 border border-white/80">
+              <span className="mono-label">0{i + 1}</span>
+              <h3 className="mt-1 text-[14.5px] font-semibold">{t}</h3>
+              <p className="mt-0.5 font-mono text-[11.5px] text-mute break-words">{d}</p>
+            </li>
+          ))}
+        </ol>
+        <div className="relative mt-8 flex flex-wrap gap-2.5">
+          <a href={MARKET} target="_blank" rel="noreferrer" className="btn btn-brand">Add to VS Code</a>
+          <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-paper">View on GitHub <Icon name="out" size={14} /></a>
+        </div>
       </div>
-    </footer>
+    </section>
   )
 }
 
 export default function App() {
   useSmoothScroll()
   const root = useRef(null)
-
-  useLayoutEffect(() => {
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
-    const ctx = gsap.context(() => {
-      if (reduce) return
-      gsap.from('.hero-in', { y: 14, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.06 })
-      gsap.utils.toArray('.reveal').forEach((el) => {
-        gsap.from(el, {
-          y: 18, opacity: 0, duration: 0.6, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 94%', once: true },
-        })
-      })
-    }, root)
-    return () => ctx.revert()
-  }, [])
+  useLayoutEffect(() => initScroll(root.current), [])
 
   return (
-    <div ref={root}>
-      <SketchDefs />
+    <div ref={root} className="relative overflow-x-clip">
+      <Defs />
+      <Clouds />
+      <Flock />
+      <Leaves />
+      <Haze />
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-brand focus:text-white focus:px-3 focus:py-2 focus:rounded-md">Skip to content</a>
       <Nav />
-      <main id="main">
+      <main id="main" className="-mt-14">
         <Hero />
         <Reads />
+        <Demo />
         <Product />
-        <How />
         <Features />
         <Start />
       </main>
-      <Footer />
+      <FooterScene />
     </div>
   )
 }
