@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import AsciiSky, { sceneAspect } from './AsciiSky'
 import Icon from './Icon'
-import { MARKET, OPEN_VSCODE } from '../links'
+import { OPEN_VSCODE } from '../links'
 
 const ASPECT = sceneAspect(1800, 1012)
 const FULL = [0, 1]
@@ -36,9 +36,6 @@ export default function Hero() {
             <a href={OPEN_VSCODE} className="btn btn-brand h-12 px-6 text-[15px]">Add to VS Code</a>
             <a href="#demo" className="btn btn-paper h-12 px-6 text-[15px]"><Icon name="play" size={13} /> Watch it work</a>
           </div>
-          <p className="rise mt-5 inline-block px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-white/80 text-[13px] text-ink/85 shadow-[0_6px_18px_-10px_rgb(13_27_62/0.4)] [animation-delay:300ms]">
-            Opens straight in VS Code. No VS Code here? <a href={MARKET} target="_blank" rel="noreferrer" className="font-medium text-brand underline underline-offset-2 hover:text-ink">View on the Marketplace</a>
-          </p>
         </div>
       </div>
     </section>

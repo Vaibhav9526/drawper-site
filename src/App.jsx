@@ -3,7 +3,8 @@ import Hero from './components/Hero'
 import Demo from './components/Demo'
 import Icon from './components/Icon'
 import Words from './components/Words'
-import { Clouds, Defs, Haze, Leaves } from './components/Decor'
+import { Defs, Haze, Leaves } from './components/Decor'
+import { AsciiHorizon, Clouds } from './components/AsciiArt'
 import FooterScene from './components/FooterScene'
 import { ArchitectureDrawing, Glyph, RelationsDrawing, ViewerDrawing } from './components/Drawings'
 import useSmoothScroll from './smooth'
@@ -99,7 +100,7 @@ function Product() {
       </div>
       <div className="mt-16 space-y-24 lg:space-y-32">
         {shots.map((s, i) => (
-          <article key={s.k} className="mx-auto max-w-[1120px] px-4 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.5fr)] gap-8 lg:gap-14 items-center">
+          <article key={s.k} className={`mx-auto max-w-[1120px] px-4 grid grid-cols-[minmax(0,1fr)] gap-8 lg:gap-14 items-center ${i % 2 ? 'lg:grid-cols-[minmax(0,1.5fr)_minmax(0,0.72fr)]' : 'lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.5fr)]'}`}>
             <div data-reveal className={i % 2 ? 'lg:order-2' : ''}>
               <p className="font-mono text-[12px] tracking-[0.1em] uppercase text-ink/72">{s.step} · {s.verb}</p>
               <h3 className="mt-3 text-[clamp(1.6rem,2.6vw,2.2rem)] font-semibold tracking-[-0.035em] leading-[1.1]">{s.k}</h3>
@@ -185,8 +186,11 @@ export default function App() {
         <Hero />
         <Reads />
         <Demo />
+        <AsciiHorizon tone="morning" seed={1.2} className="mt-16" />
         <Product />
+        <AsciiHorizon tone="noon" seed={3.4} className="mt-8" />
         <Features />
+        <AsciiHorizon tone="evening" seed={5.1} className="mt-14" />
         <Start />
       </main>
       <FooterScene />

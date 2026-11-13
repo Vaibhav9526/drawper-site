@@ -14,13 +14,14 @@ const CH = 8.3
 const RAMP = ' .\'`^",:;Il!i~+_-?][}{1)(|tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'
 const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
 const PENCIL = 'rgba(13,27,62,.7)'
+const PENCIL_LIGHT = 'rgba(255,232,190,.5)'
 const SKETCH_MS = 900
 const PAINT_MS = 2200
 
 // canvas aspect for an image (or a crop of it) of the given pixel size
 export const sceneAspect = (w, h) => (COLS * CW) / (Math.round((COLS * CW) / (w / h) / CH) * CH)
 
-function read(img, crop) {
+function read(img, crop, invert) {
   const sy = crop[0] * img.naturalHeight
   const sh = (crop[1] - crop[0]) * img.naturalHeight
   const rows = Math.round((COLS * CW) / (img.naturalWidth / sh) / CH)
@@ -49,7 +50,7 @@ function read(img, crop) {
       const b = px[i * 4 + 2]
       const l = lum[i]
       // glyph weight follows how dark the cell is, with an ordered dither so there is no banding
-      const dark = Math.min(1, Math.max(0, 1 - l) ** 0.9 * 1.25)
+      const dark = invert ? Math.min(1, Math.max(0, (l - 0.18) / 0.78) ** 1.9 * 0.9) : Math.min(1, Math.max(0, 1 - l) ** 0.9 * 1.25)
       const k = dark * (RAMP.length - 1) + (BAYER[(y % 4) * 4 + (x % 4)] / 16 - 0.5) * 2.4
       const ch = RAMP[Math.max(0, Math.min(RAMP.length - 1, Math.round(k)))]
       // gradient for the pencil pass
@@ -57,7 +58,7 @@ function read(img, crop) {
       const gy = y > 0 && y < rows - 1 ? lum[i + COLS] - lum[i - COLS] : 0
       const edge = Math.hypot(gx, gy)
       // tone on tone: deeper shade over light cells, lighter shade over dark ones
-      const f = l > 0.82 ? 0.9 : l > 0.55 ? 0.72 : 1.35
+      const f = invert ? (l > 0.6 ? 1.02 : 1.55) : l > 0.82 ? 0.9 : l > 0.55 ? 0.72 : 1.35
       const col = `rgb(${Math.min(255, r * f)},${Math.min(255, g * f)},${Math.min(255, b * f)})`
       const n = Math.abs(Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1
       const sketch = edge > 0.17 ? (Math.abs(gx) > Math.abs(gy) * 2 ? '|' : Math.abs(gy) > Math.abs(gx) * 2 ? '-' : gx * gy > 0 ? '\\' : '/') : null
@@ -67,7 +68,8 @@ function read(img, crop) {
   return { rows, cells }
 }
 
-export default function AsciiSky({ src, aspect, crop = [0, 1], sway = null, className = '', onPaint }) {
+// `invert` is for dark backgrounds: bright areas become dense, bright glyphs and dark areas fade away.
+export default function AsciiSky({ src, aspect, crop = [0, 1], sway = null, invert = false, className = '', onPaint }) {
   const cv = useRef(null)
 
   useEffect(() => {
@@ -85,7 +87,7 @@ export default function AsciiSky({ src, aspect, crop = [0, 1], sway = null, clas
     img.src = src
     img.decode().then(() => {
       if (dead) return
-      const { rows, cells } = read(img, crop)
+      const { rows, cells } = read(img, crop, invert)
       const LW = COLS * CW
       const LH = rows * CH
       const state = new Uint8Array(cells.length)
@@ -99,7 +101,7 @@ export default function AsciiSky({ src, aspect, crop = [0, 1], sway = null, clas
         if (!state[i]) return
         const s = state[i] === 1 ? k : cells[k.y * COLS + from[i]]
         ctx.clearRect(k.x * CW, k.y * CH, CW, CH)
-        ctx.fillStyle = state[i] === 1 ? PENCIL : s.col
+        ctx.fillStyle = state[i] === 1 ? (invert ? PENCIL_LIGHT : PENCIL) : s.col
         ctx.fillText(state[i] === 1 ? k.sketch : s.ch, k.x * CW + CW / 2, k.y * CH + CH / 2 + 0.4)
       }
       const fit = () => {
@@ -156,7 +158,7 @@ export default function AsciiSky({ src, aspect, crop = [0, 1], sway = null, clas
     }).catch(() => onPaint?.())
 
     return () => { dead = true; cancelAnimationFrame(raf); ro?.disconnect(); io.disconnect() }
-  }, [src, crop, sway, onPaint])
+  }, [src, crop, sway, invert, onPaint])
 
   return <canvas ref={cv} className={className} style={{ aspectRatio: `${aspect}` }} role="img" aria-label="A scene drawn in coloured text characters" />
 }

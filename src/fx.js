@@ -68,7 +68,7 @@ export function initScroll(root) {
       const pops = [...svg.querySelectorAll('[data-pop]')]
       const notes = [...svg.querySelectorAll('[data-write]')]
       const strokes = [...svg.querySelectorAll('[data-stroke]')]
-      gsap.set(pops, { opacity: 0, scale: 0.7 })
+      gsap.set(pops, { opacity: 0, scale: 0.7, transformOrigin: '50% 50%' })
       gsap.set(notes, { opacity: 0 })
       const heads = strokes.map((p) => {
         const len = p.getTotalLength()
@@ -90,7 +90,7 @@ export function initScroll(root) {
         undo.push(() => { head.remove(); p.style.strokeDasharray = ''; p.style.strokeDashoffset = '' })
         return head
       })
-      const tl = gsap.timeline({ scrollTrigger: { trigger: sheet, start: 'top 85%', end: 'bottom 55%', scrub: 0.6 } })
+      const tl = gsap.timeline({ scrollTrigger: { trigger: sheet, start: 'top 80%', once: true } })
       tl.to(pops, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.12, ease: 'back.out(1.6)' })
       strokes.forEach((p, i) => {
         const at = 0.55 + i * 0.16
@@ -132,14 +132,6 @@ export function initScroll(root) {
     gsap.to('[data-haze]', { opacity: 1, ease: 'none', scrollTrigger: turn })
     gsap.to('[data-leaves]', { filter: 'hue-rotate(-58deg) saturate(1.5)', ease: 'none', scrollTrigger: turn })
 
-    // ---- the sun slips behind the hills as you reach the end, and the hills drift apart
-    const foot = root.querySelector('[data-foot]')
-    if (foot) {
-      gsap.fromTo('[data-sun]', { y: -150 }, { y: 70, ease: 'none', scrollTrigger: { trigger: foot, start: 'top 90%', end: 'bottom bottom', scrub: 0.6 } })
-      q('[data-hill]').forEach((h) => {
-        gsap.fromTo(h, { y: 26 * parseFloat(h.dataset.hill) * 2 }, { y: 0, ease: 'none', scrollTrigger: { trigger: foot, start: 'top bottom', end: 'bottom bottom', scrub: true } })
-      })
-    }
   }, root)
 
   const refresh = () => ScrollTrigger.refresh()
