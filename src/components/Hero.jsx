@@ -5,6 +5,7 @@ import { OPEN_VSCODE } from '../links'
 
 const ASPECT = sceneAspect(1800, 1012)
 const FULL = [0, 1]
+const WIND = { from: 0.5, amp: 2.4, grass: true }
 
 // Morning. The sky and meadow rebuilt in characters coloured from the picture, with one
 // clear message in the middle.
@@ -16,7 +17,7 @@ export default function Hero() {
     <section id="top" data-hero style={{ '--hh': 'clamp(700px, 52vw, 860px)', '--ar': ASPECT }} className="relative isolate overflow-hidden h-[var(--hh)] flex flex-col">
       <div data-hero-art aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 -z-20 w-[max(100%,calc(var(--hh)*var(--ar)))] [aspect-ratio:var(--ar)] will-change-transform">
         <img src="/hero.jpg" alt="" width="1800" height="1012" fetchPriority="high" className={`absolute inset-0 w-full h-full transition-opacity duration-[1600ms] ease-out ${lit ? 'opacity-100' : 'opacity-0'}`} />
-        <AsciiSky src="/hero.jpg" crop={FULL} aspect={ASPECT} className="absolute inset-0 w-full h-full" onPaint={light} />
+        <AsciiSky src="/hero.jpg" crop={FULL} aspect={ASPECT} sway={WIND} className="absolute inset-0 w-full h-full" onPaint={light} />
       </div>
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_46%_44%_at_50%_46%,rgb(233_242_255/0.9),rgb(233_242_255/0.55)_58%,transparent_82%)]" />
       <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-28 -z-10 bg-gradient-to-b from-transparent to-[#e6f0ff]/90" />

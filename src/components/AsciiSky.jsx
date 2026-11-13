@@ -5,7 +5,8 @@ import { useEffect, useRef } from 'react'
 // density follows the picture's light, and a pencil pass of outline strokes is drawn
 // first. The image is read in the browser, so swapping the file is all it takes.
 //
-// With `sway`, the lower part of the picture moves in the wind once it is drawn: each
+// With `sway` ({ from, amp, grass }), the lower part of the picture moves in the wind once it is
+// drawn (only the green cells when `grass` is set, so skies and clouds stay still): each
 // cell borrows its glyph and colour from a neighbour a little to the left or right, and
 // the offset rolls like a wave, so grass and grain ripple in characters.
 const COLS = 300
@@ -50,7 +51,7 @@ function read(img, crop, invert) {
       const b = px[i * 4 + 2]
       const l = lum[i]
       // glyph weight follows how dark the cell is, with an ordered dither so there is no banding
-      const dark = invert ? Math.min(1, Math.max(0, (l - 0.18) / 0.78) ** 1.9 * 0.9) : Math.min(1, Math.max(0, 1 - l) ** 0.9 * 1.25)
+      const dark = invert ? Math.min(1, Math.max(0, (l - 0.04) / 0.82) ** 1.15 * 0.95) : Math.min(1, Math.max(0, 1 - l) ** 0.9 * 1.25)
       const k = dark * (RAMP.length - 1) + (BAYER[(y % 4) * 4 + (x % 4)] / 16 - 0.5) * 2.4
       const ch = RAMP[Math.max(0, Math.min(RAMP.length - 1, Math.round(k)))]
       // gradient for the pencil pass
@@ -58,11 +59,12 @@ function read(img, crop, invert) {
       const gy = y > 0 && y < rows - 1 ? lum[i + COLS] - lum[i - COLS] : 0
       const edge = Math.hypot(gx, gy)
       // tone on tone: deeper shade over light cells, lighter shade over dark ones
-      const f = invert ? (l > 0.6 ? 1.02 : 1.55) : l > 0.82 ? 0.9 : l > 0.55 ? 0.72 : 1.35
+      const f = invert ? (l > 0.6 ? 1.05 : l > 0.3 ? 1.5 : 2.1) : l > 0.82 ? 0.9 : l > 0.55 ? 0.72 : 1.35
       const col = `rgb(${Math.min(255, r * f)},${Math.min(255, g * f)},${Math.min(255, b * f)})`
       const n = Math.abs(Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1
       const sketch = edge > 0.17 ? (Math.abs(gx) > Math.abs(gy) * 2 ? '|' : Math.abs(gy) > Math.abs(gx) * 2 ? '-' : gx * gy > 0 ? '\\' : '/') : null
-      cells.push({ x, y, ch, col, sketch, n })
+      const grass = g > r * 1.04 && g > b * 1.15 && g > 70
+      cells.push({ x, y, ch, col, sketch, n, grass })
     }
   }
   return { rows, cells }
@@ -131,7 +133,9 @@ export default function AsciiSky({ src, aspect, crop = [0, 1], sway = null, inve
             const wave = Math.sin(t * 1.3 + x * 0.042 + y * 0.15) + 0.55 * Math.sin(t * 2.2 - x * 0.1 + y * 0.06)
             const sx = Math.min(COLS - 1, Math.max(0, Math.round(x + wave * amp)))
             const i = y * COLS + x
-            if (sx !== from[i]) { from[i] = sx; put(i) }
+            if (sway.grass && !cells[i].grass) continue
+            const to = sway.grass && !cells[y * COLS + sx].grass ? x : sx
+            if (to !== from[i]) { from[i] = to; put(i) }
           }
         }
       }

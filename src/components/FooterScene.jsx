@@ -3,12 +3,12 @@ import Icon from './Icon'
 import useRepoStats from '../github'
 import { CHANGELOG, ISSUES, LICENSE, MARKET, REPO } from '../links'
 
-// The end of the day: the golden-hour wheat field, drawn only in characters (no photo under
+// The end of the day: a golden-hour mountain meadow, drawn only in characters (no photo under
 // it) on dusk. The page's evening rose fades into it, and once it is drawn the grain moves in
 // the wind. See AsciiSky for how the picture becomes text.
-const CROP = [0.08, 0.98]
-const SWAY = { from: 0.5, amp: 2.6 }
-const A = sceneAspect(1800, 1014 * (CROP[1] - CROP[0]))
+const CROP = [0.05, 0.98]
+const SWAY = { from: 0.52, amp: 2.8 }
+const A = sceneAspect(1800, 1012 * (CROP[1] - CROP[0]))
 
 const cols = [
   ['Product', [['Demo', '#demo'], ['Drawings', '#product'], ['Features', '#features'], ['Get started', '#start']]],
@@ -21,7 +21,7 @@ export default function FooterScene() {
   const { stars, forks, version } = useRepoStats()
 
   return (
-    <footer data-foot className="relative z-[1] overflow-hidden" style={{ background: 'linear-gradient(to bottom, #f3978c 0, #ef8e8d 250px, #8d4f86 430px, #34204a 600px, #1c0f28 100%)' }}>
+    <footer data-foot className="relative z-[1] overflow-hidden" style={{ background: 'linear-gradient(to bottom, #f3978c 0, #ef8e8d 250px, #8d4f86 430px, #3a2552 600px, #231436 100%)' }}>
       <div className="relative z-10 px-5 pt-24 text-center text-[#3b1a2b]">
         <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-[#3b1a2b]/80">Golden hour</p>
         <h2 data-words className="mt-3 mx-auto max-w-[640px] text-balance text-[clamp(1.8rem,3.8vw,2.9rem)] font-semibold tracking-[-0.04em] leading-[1.08]">
