@@ -11,7 +11,7 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
 //   data-reveal                                  cards that swing in
 //   data-parallax="0.3"                          drifts against the scroll
 //   data-tilt                                    a window that tips up into place
-//   data-gallery + data-track                    pinned sideways gallery (desktop)
+//   data-easel / data-board / data-legs          drawing boards that fall onto their legs
 //   data-marquee                                 strip that skews with scroll speed
 //   data-cloud / data-bird / data-leaf           sky decor
 //   data-meadow + data-girl                      the walk at the end
@@ -23,12 +23,11 @@ export function initScroll(root) {
   const ctx = gsap.context(() => {
     const page = { trigger: root, start: 'top top', end: 'bottom bottom', scrub: true }
 
-    // ---- hero: the morning canvas slips off the wall and falls away as you scroll
+    // ---- hero: the picture zooms and sinks, the copy lifts away
     const hero = root.querySelector('[data-hero]')
     if (hero) {
-      gsap.to('[data-hero-canvas]', { y: () => innerHeight * 0.95, rotate: 9, scale: 0.88, transformOrigin: '50% 100%', ease: 'power1.in', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom 12%', scrub: 0.5, invalidateOnRefresh: true } })
-      gsap.to('[data-hero-canvas]', { opacity: 0, ease: 'none', scrollTrigger: { trigger: hero, start: '38% top', end: 'bottom 22%', scrub: true } })
-      gsap.to('[data-hero-art]', { scale: 1.12, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
+      gsap.to('[data-hero-art]', { scale: 1.2, yPercent: 7, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
+      gsap.to('[data-hero-copy]', { y: -150, opacity: 0, ease: 'none', scrollTrigger: { trigger: hero, start: '15% top', end: '85% top', scrub: true } })
     }
 
     // ---- headings rise word by word with a little swing
@@ -62,20 +61,14 @@ export function initScroll(root) {
         { rotateX: 0, scale: 1, y: 0, ease: 'none', scrollTrigger: { trigger: el, start: 'top 100%', end: 'top 45%', scrub: 0.6 } })
     })
 
-    // ---- the product gallery pins and slides sideways
-    const mm = gsap.matchMedia()
-    mm.add('(min-width: 1024px)', () => {
-      q('[data-gallery]').forEach((g) => {
-        const track = g.querySelector('[data-track]')
-        const dist = () => Math.max(0, track.scrollWidth - window.innerWidth + 80)
-        gsap.to(track, {
-          x: () => -dist(), ease: 'none',
-          scrollTrigger: { trigger: g, pin: true, scrub: 0.7, start: 'top 56px', end: () => `+=${dist() + window.innerHeight * 0.3}`, invalidateOnRefresh: true, anticipatePin: 1 },
-        })
-        g.querySelectorAll('[data-slide]').forEach((s, i) => {
-          gsap.fromTo(s, { rotate: i % 2 ? 3 : -3, y: i % 2 ? 24 : -24 }, { rotate: i % 2 ? -3 : 3, y: i % 2 ? -24 : 24, ease: 'none', scrollTrigger: { trigger: g, scrub: 0.7, start: 'top 56px', end: () => `+=${dist()}`, invalidateOnRefresh: true } })
-        })
-      })
+    // ---- each drawing board falls from above onto its legs
+    q('[data-easel]').forEach((e, i) => {
+      const board = e.querySelector('[data-board]')
+      gsap.fromTo(board,
+        { y: -300, rotate: i % 2 ? 11 : -11, transformOrigin: i % 2 ? '100% 100%' : '0% 100%' },
+        { y: 0, rotate: i % 2 ? 0.8 : -0.8, ease: 'power2.in', scrollTrigger: { trigger: e, start: 'top 98%', end: 'top 38%', scrub: 0.5 } })
+      gsap.fromTo(board, { opacity: 0 }, { opacity: 1, ease: 'none', scrollTrigger: { trigger: e, start: 'top 98%', end: 'top 72%', scrub: true } })
+      gsap.fromTo(e.querySelector('[data-legs]'), { scaleY: 0.92, transformOrigin: '50% 0%' }, { scaleY: 1, ease: 'none', scrollTrigger: { trigger: e, start: 'top 60%', end: 'top 36%', scrub: true } })
     })
 
     // ---- marquee that skews with scroll speed
@@ -127,10 +120,9 @@ export function initScroll(root) {
     gsap.to('[data-haze]', { opacity: 1, ease: 'none', scrollTrigger: turn })
     gsap.to('[data-leaves]', { filter: 'hue-rotate(-58deg) saturate(1.5)', ease: 'none', scrollTrigger: turn })
 
-    // ---- the evening canvas drops in from above and settles as you reach the end
+    // ---- the evening picture settles as you reach the end
     const foot = root.querySelector('[data-foot]')
     if (foot) {
-      gsap.fromTo('[data-foot-canvas]', { y: -220, rotate: -6, opacity: 0.2, transformOrigin: '50% 0%' }, { y: 0, rotate: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: foot, start: 'top 96%', end: 'top 38%', scrub: 0.5 } })
       gsap.fromTo('[data-foot-art]', { scale: 1.14, yPercent: 6, transformOrigin: '50% 100%' }, { scale: 1, yPercent: 0, ease: 'none', scrollTrigger: { trigger: foot, start: 'top bottom', end: 'bottom bottom', scrub: true } })
     }
   }, root)

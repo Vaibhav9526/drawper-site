@@ -84,26 +84,46 @@ function Reads() {
   )
 }
 
+// the wooden stand under each drawing board: a ledge, three legs and a cross brace
+function Legs() {
+  const wood = { fill: '#c08a52', stroke: '#6b4423', strokeWidth: 2.6, strokeLinejoin: 'round' }
+  return (
+    <svg data-legs viewBox="0 0 640 170" className="mx-auto block w-[64%] max-w-[600px] relative z-0" aria-hidden="true">
+      <ellipse cx="320" cy="162" rx="290" ry="8" fill="#0d1b3e" opacity=".18" />
+      <g filter="url(#wob)" strokeLinecap="round">
+        <path d="M120 16 L74 156 H108 L158 16Z" {...wood} />
+        <path d="M520 16 L566 156 H532 L482 16Z" {...wood} />
+        <path d="M298 16 L292 150 H348 L342 16Z" {...wood} />
+        <path d="M104 92 H536 V108 H96Z" fill="#d6a468" stroke="#6b4423" strokeWidth="2.6" strokeLinejoin="round" />
+        <rect x="28" y="0" width="584" height="18" rx="5" fill="#d6a468" stroke="#6b4423" strokeWidth="2.6" />
+        <path d="M44 5.500 H596" stroke="#efcf9f" strokeWidth="2.200" />
+        <path d="M82 148 H104 M536 148 H558 M296 142 H344" stroke="#3d2814" strokeWidth="4" />
+      </g>
+    </svg>
+  )
+}
+
 function Product() {
   return (
-    <section id="product" data-gallery className="relative z-10 lg:min-h-[calc(100svh-56px)] flex flex-col justify-center py-20 lg:py-10">
+    <section id="product" className="relative z-10 pt-24">
       <div className="mx-auto w-full max-w-[1120px] px-4">
         <p className="mono-label">Drawn, not screenshotted</p>
         <Words as="h2" className={`mt-2 ${H2}`}>Draw it. Link it. Ship it.</Words>
         <p className="mt-3 max-w-[560px] text-[16px] leading-relaxed text-ink/70">Sketches of what you get inside VS Code: the canvas, the arrow, the viewer.</p>
       </div>
-      <div className="mt-8 overflow-hidden lg:overflow-visible">
-        <div data-track className="flex flex-col lg:flex-row gap-6 px-4 lg:pl-[max(1rem,calc((100vw-1120px)/2+1rem))] lg:pr-10 lg:w-max will-change-transform">
-          {shots.map((s) => (
-            <figure key={s.k} data-slide className="card overflow-hidden lg:w-[min(78vw,880px)] shrink-0 shadow-[0_40px_70px_-45px_rgb(13_27_62/0.5)]">
+      <div className="mt-12 space-y-10 pb-6">
+        {shots.map((s) => (
+          <figure key={s.k} data-easel className="mx-auto w-full max-w-[1040px] px-4">
+            <div data-board className="canvas-frame relative z-10 bg-[#fbf6ec] will-change-transform">
               <s.Art />
-              <figcaption className="px-5 py-4 border-t border-line flex flex-wrap items-baseline gap-x-3">
+              <figcaption className="px-5 py-4 border-t border-black/10 bg-[#fbf6ec] flex flex-wrap items-baseline gap-x-3">
                 <span className="font-display text-[18px] font-semibold tracking-[-0.02em]">{s.k}</span>
-                <span className="text-[14px] text-ink/65">{s.d}</span>
+                <span className="text-[14px] text-ink/65 text-pretty">{s.d}</span>
               </figcaption>
-            </figure>
-          ))}
-        </div>
+            </div>
+            <Legs />
+          </figure>
+        ))}
       </div>
     </section>
   )
