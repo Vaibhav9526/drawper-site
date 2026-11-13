@@ -8,7 +8,7 @@ import FooterScene from './components/FooterScene'
 import { ArchitectureDrawing, Glyph, RelationsDrawing, ViewerDrawing } from './components/Drawings'
 import useSmoothScroll from './smooth'
 import useRepoStats from './github'
-import { MARKET, REPO } from './links'
+import { OPEN_VSCODE, REPO } from './links'
 import { initScroll } from './fx'
 
 const sources = ['Prisma', 'SQL', 'Drizzle', 'TypeORM', 'SQLAlchemy', 'Django', 'Mongoose']
@@ -65,7 +65,7 @@ function Nav() {
             <span className="px-2.5 h-full grid place-items-center border-l border-white/70 bg-white/55 font-medium tabular-nums">{forks}</span>
           </a>
           <span className="hidden xl:inline-flex items-center h-8 px-3 rounded-full border border-white/70 bg-white/55 backdrop-blur-md font-mono text-[12px] text-ink/70">v{version}</span>
-          <a href={MARKET} target="_blank" rel="noreferrer" className="btn btn-brand btn-sm">Install</a>
+          <a href={OPEN_VSCODE} className="btn btn-brand btn-sm">Install</a>
         </div>
       </div>
     </header>
@@ -145,7 +145,7 @@ function Start() {
           ))}
         </ol>
         <div className="relative mt-8 flex flex-wrap gap-2.5">
-          <a href={MARKET} target="_blank" rel="noreferrer" className="btn btn-brand">Add to VS Code</a>
+          <a href={OPEN_VSCODE} className="btn btn-brand">Add to VS Code</a>
           <a href={REPO} target="_blank" rel="noreferrer" className="btn btn-paper">View on GitHub <Icon name="out" size={14} /></a>
         </div>
       </div>

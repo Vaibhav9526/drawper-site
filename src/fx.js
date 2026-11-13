@@ -23,11 +23,12 @@ export function initScroll(root) {
   const ctx = gsap.context(() => {
     const page = { trigger: root, start: 'top top', end: 'bottom bottom', scrub: true }
 
-    // ---- hero: the picture zooms and sinks, the copy lifts away
+    // ---- hero: the morning canvas slips off the wall and falls away as you scroll
     const hero = root.querySelector('[data-hero]')
     if (hero) {
-      gsap.to('[data-hero-art]', { scale: 1.22, yPercent: 7, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
-      gsap.to('[data-hero-copy]', { y: -150, opacity: 0, ease: 'none', scrollTrigger: { trigger: hero, start: '15% top', end: '85% top', scrub: true } })
+      gsap.to('[data-hero-canvas]', { y: () => innerHeight * 0.95, rotate: 9, scale: 0.88, transformOrigin: '50% 100%', ease: 'power1.in', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom 12%', scrub: 0.5, invalidateOnRefresh: true } })
+      gsap.to('[data-hero-canvas]', { opacity: 0, ease: 'none', scrollTrigger: { trigger: hero, start: '38% top', end: 'bottom 22%', scrub: true } })
+      gsap.to('[data-hero-art]', { scale: 1.12, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
     }
 
     // ---- headings rise word by word with a little swing
@@ -126,10 +127,11 @@ export function initScroll(root) {
     gsap.to('[data-haze]', { opacity: 1, ease: 'none', scrollTrigger: turn })
     gsap.to('[data-leaves]', { filter: 'hue-rotate(-58deg) saturate(1.5)', ease: 'none', scrollTrigger: turn })
 
-    // ---- the footer picture settles into place as it arrives
+    // ---- the evening canvas drops in from above and settles as you reach the end
     const foot = root.querySelector('[data-foot]')
     if (foot) {
-      gsap.fromTo('[data-foot-art]', { scale: 1.16, yPercent: 7, transformOrigin: '50% 100%' }, { scale: 1, yPercent: 0, ease: 'none', scrollTrigger: { trigger: foot, start: 'top bottom', end: 'bottom bottom', scrub: true } })
+      gsap.fromTo('[data-foot-canvas]', { y: -220, rotate: -6, opacity: 0.2, transformOrigin: '50% 0%' }, { y: 0, rotate: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: foot, start: 'top 96%', end: 'top 38%', scrub: 0.5 } })
+      gsap.fromTo('[data-foot-art]', { scale: 1.14, yPercent: 6, transformOrigin: '50% 100%' }, { scale: 1, yPercent: 0, ease: 'none', scrollTrigger: { trigger: foot, start: 'top bottom', end: 'bottom bottom', scrub: true } })
     }
   }, root)
 
